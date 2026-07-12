@@ -136,14 +136,21 @@ function Folder({ c, index = 0, unlocked, solved, onOpen, onHover }) {
           <span className="font-light">//</span>
         </div>
 
-        {/* Blurred title + teaser = the silhouette. */}
-        <div className="mt-auto select-none blur-[5px]">
-          <h3 className="text-xl font-semibold leading-tight text-zinc-300">{c.title}</h3>
-          <p className="mt-2 pr-6 text-[11px] leading-snug text-zinc-500">{c.teaser}</p>
+        {/* Blurred title + teaser = the silhouette. Structurally identical to the
+            unlocked card (same mt-auto block + trailing row) so the text lines up
+            at the same height; the blur is isolated so it doesn't shift layout. */}
+        <div className="mt-auto">
+          <div className="select-none blur-[5px]">
+            <h3 className="text-xl font-semibold leading-tight text-zinc-300">{c.title}</h3>
+            <p className="mt-2 pr-6 text-[11px] leading-snug text-zinc-500">{c.teaser}</p>
+          </div>
         </div>
-        {/* Spacer matching the unlocked card's "open file" row so the blurred
-            title/teaser block sits at the same height across all cards. */}
-        <div className="mt-4 h-[10px]" />
+        {/* Invisible clone of the unlocked "open file" row so the bottom spacing
+            matches exactly. */}
+        <div className="mt-4 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest opacity-0">
+          open file
+          <ChevronRight className="h-3 w-3" strokeWidth={2.5} />
+        </div>
 
         {/* Lock badge overlay. */}
         <div className="absolute inset-0 flex items-center justify-center">
