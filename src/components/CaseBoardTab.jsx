@@ -81,7 +81,7 @@ function Board({ tables }) {
   }, [edges])
 
   return (
-    <div className="h-full overflow-auto px-6 py-6">
+    <div className="h-full overflow-auto px-8 py-7">
       <div className="mx-auto max-w-4xl">
         <h2 className="mb-1 text-2xl font-semibold text-zinc-100">Case Board</h2>
         <p className="mb-8 text-xs text-zinc-500">

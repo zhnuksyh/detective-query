@@ -7,26 +7,34 @@ export default function CrimeSceneTab({ caseData }) {
   }
 
   return (
-    <div className="h-full overflow-y-auto px-6 py-6">
+    <div className="h-full overflow-y-auto px-8 py-7">
       <div className="mx-auto max-w-3xl">
         <div className="mb-6">
-          <h2 className="text-3xl font-semibold text-zinc-100">{caseData.title}</h2>
+          <h2 className="text-2xl font-semibold text-zinc-100">Crime Scene</h2>
+          <p className="mt-1 text-xs uppercase tracking-[0.25em] text-zinc-500">
+            {toTitleCase(caseData.title)}
+          </p>
         </div>
 
         {/* Vitals */}
-        <dl className="mb-8 grid grid-cols-1 gap-px overflow-hidden rounded border border-zinc-800 bg-zinc-800 sm:grid-cols-3">
+        <dl className="mb-8 grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-zinc-800 bg-zinc-800 sm:grid-cols-3">
           <Vital term="Victim" value={scene.victim} />
           <Vital term="Location" value={scene.location} />
           <Vital term="Time of death" value={scene.timeOfDeath} />
         </dl>
 
         {/* Report body — the forensic details are woven into this narrative. */}
-        <div className="whitespace-pre-line text-sm leading-relaxed text-zinc-300">
+        <div className="whitespace-pre-line text-sm leading-[2.1] text-zinc-300">
           {scene.report}
         </div>
       </div>
     </div>
   )
+}
+
+/** "THE MIDNIGHT DRIFT" -> "The Midnight Drift" */
+function toTitleCase(s) {
+  return s.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase())
 }
 
 function Vital({ term, value }) {
