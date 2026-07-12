@@ -2,49 +2,21 @@
  * Background music player. Unlike the procedural effects/ambience (Web Audio),
  * music is a plain looping <audio> element streaming an MP3 from /public/music.
  *
- * The tracks themselves are NOT bundled in the repo — they're Uppbeat music,
- * whose licence requires an account + credit and forbids redistributing the raw
- * files. Drop your downloaded MP3s into public/music/ using the `file` names
- * below (see public/music/README.md). If a file is missing the player just
- * stays silent; the game is fully playable without it.
+ * The game loops a single background track. Drop a free-to-distribute MP3 into
+ * public/music/ named `theme.mp3` (see public/music/README.md). If it's missing
+ * the player just stays silent; the game is fully playable without it.
  */
 
 // Vite serves /public at the app root; `import.meta.env.BASE_URL` respects the
 // relative `base` we build with, so this resolves on GitHub Pages subpaths too.
 const base = import.meta.env.BASE_URL || '/'
 
-export const MUSIC_TRACKS = [
-  {
-    key: 'awareness',
-    label: 'Awareness',
-    artist: 'Simon Folwar',
-    file: 'awareness-simon-folwar-main-version-26708-02-09.mp3',
-    credit: 'https://uppbeat.io/music/tracks/simon-folwar/awareness',
-  },
-  {
-    key: 'sunshine',
-    label: 'Sunshine',
-    artist: 'Danijel Zambo',
-    file: 'sunshine-danijel-zambo-main-version-01-54-1403.mp3',
-    credit: 'https://uppbeat.io/music/tracks/danijel-zambo/sunshine',
-  },
-  {
-    key: 'behind-clouds',
-    label: 'Behind Clouds',
-    artist: 'Tim Schaufert',
-    file: 'behind-clouds-tim-schaufert-main-version-43506-02-48.mp3',
-    credit: 'https://uppbeat.io/music/tracks/tim-schaufert/behind-clouds',
-  },
-]
-
-function trackByKey(key) {
-  return MUSIC_TRACKS.find((t) => t.key === key) || MUSIC_TRACKS[0]
-}
+// The single looping background track (file in public/music/).
+const MUSIC_FILE = 'true_crime_soundridemusic.mp3'
 
 let audio = null
 let state = {
   enabled: false,
-  trackKey: MUSIC_TRACKS[0].key,
   volume: 0.6, // effective volume (master * music), applied to the element
   started: false, // whether a user gesture has let playback begin
 }
@@ -61,9 +33,8 @@ function ensureAudio() {
   return audio
 }
 
-function srcFor(key) {
-  const t = trackByKey(key)
-  return `${base}music/${t.file}`
+function srcFor() {
+  return `${base}music/${MUSIC_FILE}`
 }
 
 /** Attempt to play; browsers reject until a user gesture, which we swallow. */
@@ -75,20 +46,17 @@ function tryPlay() {
 
 /**
  * Reconcile the player with a desired mix. Called on every settings change and
- * once after the first user gesture. Handles: enabling/disabling, switching
- * tracks (only reloads src when the track actually changes), and volume.
+ * once after the first user gesture. Handles enabling/disabling and volume.
  */
-export function updateMusic({ enabled, trackKey, volume, gesture = false }) {
+export function updateMusic({ enabled, volume, gesture = false }) {
   if (gesture) state.started = true
   if (enabled !== undefined) state.enabled = enabled
-  if (trackKey !== undefined) state.trackKey = trackKey
   if (volume !== undefined) state.volume = volume
 
   const a = ensureAudio()
   a.volume = Math.max(0, Math.min(1, state.volume))
 
-  const wantSrc = srcFor(state.trackKey)
-  // Compare against the resolved absolute URL the element reports.
+  const wantSrc = srcFor()
   const currentFile = a.src.split('/').pop()
   const wantFile = wantSrc.split('/').pop()
   if (currentFile !== wantFile) {

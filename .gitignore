@@ -14,6 +14,4 @@ dev-server.log
 # stray screenshots dropped in the project root (assets under src/ are tracked)
 /*.jpg
 
-# Uppbeat-licensed music: add these locally (see public/music/README.md), but
-# don't redistribute the raw audio in the repo.
-public/music/*.mp3
+CLAUDE.md

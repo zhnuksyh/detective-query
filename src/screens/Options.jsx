@@ -1,5 +1,4 @@
 import { ChevronLeft } from 'lucide-react'
-import { MUSIC_TRACKS } from '../engine/music.js'
 
 export default function Options({ game, play }) {
   const { settings } = game.save
@@ -71,45 +70,6 @@ export default function Options({ game, play }) {
             }}
           />
 
-          <div>
-            <div className="mb-2 font-display text-lg tracking-wide text-zinc-200">Track</div>
-            <div className="space-y-1.5">
-              {MUSIC_TRACKS.map((t) => {
-                const active = settings.musicTrack === t.key
-                return (
-                  <button
-                    key={t.key}
-                    disabled={!settings.sound || !settings.music}
-                    onClick={() => {
-                      set({ musicTrack: t.key })
-                      play('select')
-                    }}
-                    className={`press flex w-full items-center justify-between rounded-xl border px-4 py-2.5 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
-                      active
-                        ? 'border-crimson/70 bg-crimson/5'
-                        : 'border-zinc-800 hover:border-zinc-600'
-                    }`}
-                  >
-                    <span>
-                      <span className={`text-sm ${active ? 'text-crimson' : 'text-zinc-200'}`}>
-                        {t.label}
-                      </span>
-                      <span className="ml-2 text-xs text-zinc-500">{t.artist}</span>
-                    </span>
-                    {active && (
-                      <span className="text-[9px] font-bold uppercase tracking-widest text-crimson">
-                        playing
-                      </span>
-                    )}
-                  </button>
-                )
-              })}
-            </div>
-            <p className="mt-2 text-[11px] leading-relaxed text-zinc-600">
-              Music by Uppbeat. Add the track files to <code>public/music/</code> — the game
-              stays silent until they’re present. See the README there.
-            </p>
-          </div>
         </Section>
 
         <Section title="Display">
@@ -125,7 +85,7 @@ export default function Options({ game, play }) {
               step="0.05"
               value={settings.textScale}
               onChange={(e) => set({ textScale: Number(e.target.value) })}
-              className="w-full accent-crimson"
+              className="range-crimson"
             />
           </div>
         </Section>
@@ -172,7 +132,7 @@ function Slider({ label, value, onChange, disabled }) {
         value={value}
         disabled={disabled}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full accent-crimson disabled:cursor-not-allowed"
+        className="range-crimson"
       />
     </div>
   )

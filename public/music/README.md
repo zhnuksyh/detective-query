@@ -1,33 +1,18 @@
 # Background music
 
-The game plays a looping background track while you work a case. The tracks are
-**not committed to this repo** — they're licensed from [Uppbeat](https://uppbeat.io),
-whose licence requires a (free) account, credit, and forbids redistributing the
-raw audio files. So you add them yourself.
+The game loops a single background track while you work a case.
 
 ## How to add the music
 
-1. Sign in to Uppbeat and open each track below.
-2. Download the MP3.
-3. Drop it into **this folder** (`public/music/`) using the exact filename shown.
+1. Get a music track that is **free to distribute** (e.g. Creative Commons / CC0,
+   or one whose licence permits including it in this repo).
+2. Drop it into **this folder** (`public/music/`).
+3. Point `MUSIC_FILE` in [`src/engine/music.js`](../../src/engine/music.js) at
+   its filename.
 
-| Setting label   | Filename            | Source                                                            |
-| --------------- | ------------------- | ----------------------------------------------------------------- |
-| Awareness (default) | `awareness.mp3`     | https://uppbeat.io/music/tracks/simon-folwar/awareness            |
-| Sunshine        | `sunshine.mp3`      | https://uppbeat.io/music/tracks/danijel-zambo/sunshine            |
-| Behind Clouds   | `behind-clouds.mp3` | https://uppbeat.io/music/tracks/tim-schaufert/behind-clouds       |
+The current track is `true_crime_soundridemusic.mp3`. Until the file named there
+is present the game stays silent; everything else works fine without it.
 
-That's it — the player picks them up automatically. Until a file is present its
-track just stays silent; the game is fully playable without music.
-
-## Changing the catalog
-
-The track list lives in [`src/engine/music.js`](../../src/engine/music.js)
-(`MUSIC_TRACKS`). Add/rename entries there and update the filenames above to
-match. Each entry's `credit` URL is where the required Uppbeat attribution
-points.
-
-## Attribution
-
-Per the Uppbeat licence you must credit the tracks you ship. The Credits screen
-and this README both point at the source pages above.
+Toggle music on/off and set its volume in **Options**. If you ship a track,
+remember to credit it in the Credits screen (`src/screens/Credits.jsx`) if its
+licence requires attribution.

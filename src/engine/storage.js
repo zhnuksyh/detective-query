@@ -21,7 +21,6 @@ const DEFAULT_STATE = {
     textScale: 1,
     // Audio mix. Volumes are 0..1 and compose multiplicatively with master.
     music: true,
-    musicTrack: 'awareness', // key into MUSIC_TRACKS
     masterVolume: 0.8,
     musicVolume: 0.6,
     sfxVolume: 0.8,

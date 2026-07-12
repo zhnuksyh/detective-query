@@ -1,5 +1,4 @@
 import { ChevronLeft } from 'lucide-react'
-import { MUSIC_TRACKS } from '../engine/music.js'
 
 export default function Credits({ game, play }) {
   return (
@@ -21,15 +20,6 @@ export default function Credits({ game, play }) {
       <div className="space-y-5 text-sm text-zinc-400">
         <Credit role="Concept & Design" who="Zahin Ukasyah" />
         <Credit role="Main Menu Art" who="Rebecca Hu — Illustrator & Concept Artist" />
-        {/* One line per shipped track — named credit per the Uppbeat licence,
-            sourced from the same catalogue the player uses. */}
-        {MUSIC_TRACKS.map((t, i) => (
-          <Credit
-            key={t.key}
-            role={i === 0 ? 'Music' : ''}
-            who={`“${t.label}” — ${t.artist} (Uppbeat)`}
-          />
-        ))}
         <Credit role="SQL Engine" who="sql.js — SQLite compiled to WebAssembly" />
         <Credit role="Editor" who="CodeMirror 6" />
         <Credit role="Data Grid" who="TanStack Table" />

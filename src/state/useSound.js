@@ -13,7 +13,6 @@ export function useSound(game) {
   const {
     sound: enabled,
     music: musicEnabled,
-    musicTrack,
     masterVolume,
     musicVolume,
     sfxVolume,
@@ -32,12 +31,11 @@ export function useSound(game) {
     const musicOn = enabled && musicEnabled
     updateMusic({
       enabled: musicOn,
-      trackKey: musicTrack,
       volume: masterVolume * musicVolume,
     })
     // Ambience yields to music whenever music is actually sounding.
     setMusicActive(isMusicActive())
-  }, [enabled, musicEnabled, musicTrack, masterVolume, musicVolume])
+  }, [enabled, musicEnabled, masterVolume, musicVolume])
 
   // Browsers block audio until a user gesture. On the first interaction, boot
   // the ambience bed and let music begin, then detach the listeners.
@@ -47,7 +45,6 @@ export function useSound(game) {
       const musicOn = enabled && musicEnabled
       updateMusic({
         enabled: musicOn,
-        trackKey: musicTrack,
         volume: masterVolume * musicVolume,
         gesture: true,
       })
