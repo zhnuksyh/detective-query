@@ -40,6 +40,17 @@ export function useSound(game) {
   // Browsers block audio until a user gesture. On the first interaction, boot
   // the ambience bed and let music begin, then detach the listeners.
   useEffect(() => {
+    // Optimistic attempt: some browsers (with prior media-engagement) allow
+    // autoplay. Try immediately on load — if it's blocked the promise rejects
+    // silently and the gesture listeners below still catch the first interaction.
+    const musicOn = enabled && musicEnabled
+    updateMusic({ enabled: musicOn, volume: masterVolume * musicVolume, gesture: true })
+    setMusicActive(isMusicActive())
+
+    // Browsers block audio until the user interacts with the page. Listen for
+    // the widest set of "first gesture" events so music/ambience begin the
+    // instant the user does *anything* — tap, click, key, scroll, or move.
+    const GESTURES = ['pointerdown', 'keydown', 'touchstart', 'click', 'wheel']
     const start = () => {
       startAmbience()
       const musicOn = enabled && musicEnabled
@@ -49,15 +60,10 @@ export function useSound(game) {
         gesture: true,
       })
       setMusicActive(isMusicActive())
-      window.removeEventListener('pointerdown', start)
-      window.removeEventListener('keydown', start)
+      GESTURES.forEach((ev) => window.removeEventListener(ev, start))
     }
-    window.addEventListener('pointerdown', start)
-    window.addEventListener('keydown', start)
-    return () => {
-      window.removeEventListener('pointerdown', start)
-      window.removeEventListener('keydown', start)
-    }
+    GESTURES.forEach((ev) => window.addEventListener(ev, start, { passive: true }))
+    return () => GESTURES.forEach((ev) => window.removeEventListener(ev, start))
     // Intentionally run once; the reconcile effect above handles later changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
