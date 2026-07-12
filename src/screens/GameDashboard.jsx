@@ -61,21 +61,25 @@ export default function GameDashboard({ game }) {
 
   return (
     <div className="flex h-full w-full flex-col">
-      {/* Case header */}
-      <header className="flex items-center justify-between border-b border-zinc-800 px-10 py-4">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => game.setScreen('levels')}
-            className="text-[11px] uppercase tracking-[0.3em] text-zinc-500 hover:text-zinc-100"
-          >
-            &larr; files
-          </button>
-          <div className="h-4 w-px bg-zinc-800" />
-          <span className="text-sm font-medium tracking-wide text-zinc-200">{caseData.title}</span>
+      {/* Case header — its inner container matches the content-card container
+          below (same px-6 outer padding + max-w-4xl), so their left/right edges
+          line up exactly. */}
+      <header className="border-b border-zinc-800 px-6 py-4">
+        <div className="mx-auto flex w-full max-w-4xl items-center justify-between">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => game.setScreen('levels')}
+              className="text-[11px] uppercase tracking-[0.3em] text-zinc-500 hover:text-zinc-100"
+            >
+              &larr; files
+            </button>
+            <div className="h-4 w-px bg-zinc-800" />
+            <span className="text-sm font-medium tracking-wide text-zinc-200">{caseData.title}</span>
+          </div>
+          <span className="text-[10px] uppercase tracking-[0.3em] text-zinc-600">
+            {game.save.solvedCases.includes(caseData.id) ? 'CASE CLOSED' : 'UNRESOLVED'}
+          </span>
         </div>
-        <span className="text-[10px] uppercase tracking-[0.3em] text-zinc-600">
-          {game.save.solvedCases.includes(caseData.id) ? 'CASE CLOSED' : 'UNRESOLVED'}
-        </span>
       </header>
 
       {/* Folder-card: tabs stick out of the top of a white-outlined content box.
