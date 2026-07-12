@@ -75,7 +75,9 @@ export default function AnalysisTab({ caseData, db, dbError, game, unlocked, onU
 
         <div className="h-[42%] min-h-[140px] overflow-hidden border-b border-zinc-800">
           {dbError ? (
-            <div className="p-4 text-xs text-crimson">Failed to load database: {dbError}</div>
+            <div className="p-4 text-xs text-zinc-400">
+              Couldn’t load the case database: {dbError}
+            </div>
           ) : (
             <CodeMirror
               value={sqlText}
