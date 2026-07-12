@@ -3,7 +3,7 @@
  * progress, notebook text, and unlocked levels live entirely in the browser.
  */
 
-const KEY = 'deductive-query:save:v1'
+const KEY = 'detective-query:save:v1'
 
 const DEFAULT_STATE = {
   // Case ids that have been fully solved (report submitted correctly).
