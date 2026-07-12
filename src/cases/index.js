@@ -21,34 +21,34 @@ export const CASES = [
   lockedStub({
     id: 'case_02',
     code: 'CODE_02',
-    tag: 'PLACEHOLDER',
-    title: 'CASE TWO',
+    tag: 'FALLING',
+    title: 'A LONG WAY DOWN',
     folderTheme: 'fall',
-    teaser: 'Placeholder case — coming soon.',
+    teaser: 'A fall from the seventh floor. The physics say jump. The database says otherwise.',
   }),
   lockedStub({
     id: 'case_03',
     code: 'CODE_03',
-    tag: 'PLACEHOLDER',
-    title: 'CASE THREE',
+    tag: 'FALLING',
+    title: 'TERMINAL VELOCITY',
     folderTheme: 'fall',
-    teaser: 'Placeholder case — coming soon.',
+    teaser: 'Two falls, one week apart, same stairwell. Coincidence has a foreign key.',
   }),
   lockedStub({
     id: 'case_04',
     code: 'CODE_04',
-    tag: 'PLACEHOLDER',
-    title: 'CASE FOUR',
+    tag: 'SIGNAL',
+    title: 'DEAD SIGNAL',
     folderTheme: 'signal',
-    teaser: 'Placeholder case — coming soon.',
+    teaser: 'The last text was sent at 02:14. His phone was already off the grid at 01:50.',
   }),
   lockedStub({
     id: 'case_05',
     code: 'CODE_05',
-    tag: 'PLACEHOLDER',
-    title: 'CASE FIVE',
+    tag: 'AFTER WORK',
+    title: 'AFTER WORK',
     folderTheme: 'work',
-    teaser: 'Placeholder case — coming soon.',
+    teaser: 'Everyone clocked out. The badge reader remembers one who never did.',
   }),
 ]
 
@@ -58,10 +58,6 @@ export function getCase(id) {
 
 /** A case is unlocked if it's case_01 or the previous case has been solved. */
 export function isCaseUnlocked(caseId, solvedCases) {
-  // TEMP: unlock every case so all folders are visible during layout work.
-  // Restore the progression logic below when cases 02–05 are built.
-  return true
-  // eslint-disable-next-line no-unreachable
   const idx = CASES.findIndex((c) => c.id === caseId)
   if (idx <= 0) return true
   return solvedCases.includes(CASES[idx - 1].id)
