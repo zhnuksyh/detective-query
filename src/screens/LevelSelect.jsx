@@ -16,7 +16,7 @@ export default function LevelSelect({ game }) {
   return (
     <div className="flex h-full w-full flex-col">
       {/* Top bar */}
-      <header className="flex items-center px-10 pt-8 pb-4">
+      <header className="flex items-center px-6 py-4">
         <button
           onClick={() => game.setScreen('menu')}
           className="flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-700 bg-zinc-900 text-lg text-zinc-400 transition-colors hover:border-zinc-500 hover:text-zinc-100"
@@ -27,7 +27,7 @@ export default function LevelSelect({ game }) {
       </header>
 
       {/* Cabinet: staggered vertical folder tabs */}
-      <div className="relative flex flex-1 items-stretch overflow-x-auto px-10 pb-10">
+      <div className="relative flex flex-1 items-stretch overflow-x-auto px-6 pb-6">
         {CASES.map((c, i) => {
           const unlocked = isCaseUnlocked(c.id, save.solvedCases)
           const solved = save.solvedCases.includes(c.id)
