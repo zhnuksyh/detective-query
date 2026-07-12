@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react'
  * <select> won't let us round/skin the option list). Closes on outside-click
  * or Escape. `tone` picks the border/text accent for graded states.
  */
-export default function Dropdown({ value, options, onChange, tone = 'idle', placeholder = ' ' }) {
+export default function Dropdown({ value, options, onChange, tone = 'idle' }) {
   const [open, setOpen] = useState(false)
   const ref = useRef(null)
 
@@ -40,9 +40,10 @@ export default function Dropdown({ value, options, onChange, tone = 'idle', plac
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className={`absolute left-0 top-1/2 flex w-full -translate-y-1/2 items-center justify-center rounded-full border bg-zinc-950 px-5 py-2.5 text-sm leading-none transition-colors focus:outline-none ${toneCls}`}
+        className={`absolute left-0 top-1/2 flex w-full -translate-y-1/2 items-center justify-center rounded-full border bg-zinc-950 px-5 py-2.5 text-sm transition-colors focus:outline-none ${toneCls}`}
       >
-        <span className={value ? '' : 'text-zinc-600'}>{value || placeholder}</span>
+        {/*   keeps a full-height line box when empty so the pill never collapses. */}
+        <span className="leading-normal">{value || ' '}</span>
       </button>
 
       {open && (
