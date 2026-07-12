@@ -33,7 +33,11 @@ const OPEN_PATH = CLOSED_PATH
 
 export default function TabBar({ tabs, active, onSelect }) {
   return (
-    <div className="relative z-10 flex items-end pl-5">
+    // The row carries a real 1px bottom border in the SAME colour/weight as the
+    // content card's border, so the seam under the inactive tabs is literally
+    // the card border rendered by CSS — guaranteed to match. The active tab is
+    // drawn on top with its bottom open, breaking the line where it merges.
+    <div className="relative z-10 flex items-end border-b border-zinc-100 pl-5">
       {tabs.map((t, i) => (
         <Tab
           key={t.key}
@@ -52,7 +56,15 @@ function Tab({ tab, isActive, onSelect, style }) {
   return (
     <button
       onClick={() => onSelect(tab.key)}
-      style={{ width: W, height: H, ...style, zIndex: isActive ? 20 : 1 }}
+      style={{
+        width: W,
+        height: H,
+        ...style,
+        zIndex: isActive ? 20 : 1,
+        // The active tab drops 1px to sit over the row's bottom border, so its
+        // open-bottomed outline replaces the shared line where it merges.
+        marginBottom: isActive ? -1 : 0,
+      }}
       className="relative flex items-center justify-center"
     >
       <svg
@@ -68,9 +80,9 @@ function Tab({ tab, isActive, onSelect, style }) {
           d={`${CLOSED_PATH} L 1 ${H} Z`}
           fill={isActive ? '#09090b' : '#71717a'}
         />
-        {/* Top + side outline. Active = white (matches the card border weight);
-            inactive = darker grey. non-scaling-stroke keeps it a true 1px so it
-            reads identically to the CSS border on the content card. */}
+        {/* Top + side outline. Active = white and OPEN at the bottom so it flows
+            into the card; inactive = darker grey (its bottom seam is the shared
+            CSS border on the row, guaranteeing it matches the card exactly). */}
         <path
           d={isActive ? OPEN_PATH : CLOSED_PATH}
           fill="none"
@@ -79,15 +91,6 @@ function Tab({ tab, isActive, onSelect, style }) {
           strokeLinejoin="round"
           vectorEffect="non-scaling-stroke"
         />
-        {/* Inactive tabs carry the card's white top border along their bottom edge. */}
-        {!isActive && (
-          <path
-            d={`M 0 ${H} L ${W} ${H}`}
-            stroke="#f4f4f5"
-            strokeWidth="1"
-            vectorEffect="non-scaling-stroke"
-          />
-        )}
       </svg>
       <span
         className={`relative z-10 font-display text-[11px] font-semibold tracking-widest ${

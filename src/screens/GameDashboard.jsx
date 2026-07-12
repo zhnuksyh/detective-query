@@ -65,7 +65,7 @@ export default function GameDashboard({ game }) {
       {/* Case header — its inner container matches the content-card container
           below (same px-6 outer padding + max-w-4xl), so their left/right edges
           line up exactly. */}
-      <header className="px-6 py-4">
+      <header className="px-6 pb-4 pt-8">
         <div className="mx-auto flex w-full max-w-4xl items-center justify-between">
           <div className="flex items-center gap-4">
             <button
