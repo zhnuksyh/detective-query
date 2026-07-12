@@ -1,12 +1,23 @@
-import { ChevronLeft, Lock } from 'lucide-react'
+import { useRef } from 'react'
+import { ChevronLeft, ChevronRight, Lock } from 'lucide-react'
 import { CASES, isCaseUnlocked } from '../cases/index.js'
 
 export default function LevelSelect({ game }) {
   const { save } = game
+  const trackRef = useRef(null)
+
+  // Scroll the carousel by roughly one card width per click.
+  const scrollByCard = (dir) => {
+    const track = trackRef.current
+    if (!track) return
+    const card = track.querySelector('[data-card]')
+    const step = card ? card.getBoundingClientRect().width + 16 : 300
+    track.scrollBy({ left: dir * step, behavior: 'smooth' })
+  }
 
   return (
     <div className="flex h-full w-full flex-col">
-      {/* Top bar — "Menu" button placed exactly where the case page shows "‹ FILES". */}
+      {/* Top bar — "Menu" button placed like the case page's "‹ FILES". */}
       <header className="px-6 py-4">
         <div className="mx-auto w-full max-w-4xl">
           <button
@@ -19,49 +30,81 @@ export default function LevelSelect({ game }) {
         </div>
       </header>
 
-      {/* Cabinet: folders centred in the row. */}
-      <div className="flex flex-1 items-stretch justify-center gap-3 overflow-x-auto px-6 pb-6">
-        {CASES.map((c, i) => {
-          const unlocked = isCaseUnlocked(c.id, save.solvedCases)
-          const solved = save.solvedCases.includes(c.id)
-          return (
-            <Folder
-              key={c.id}
-              c={c}
-              index={i}
-              unlocked={unlocked}
-              solved={solved}
-              onOpen={() => unlocked && game.openCase(c.id)}
-            />
-          )
-        })}
+      {/* Carousel, sized to the game-board container (max-w-4xl) so exactly three
+          cards fit at once. */}
+      <div className="flex min-h-0 flex-1 flex-col items-center px-6 pb-6">
+        <div className="flex min-h-0 w-full max-w-4xl flex-1 flex-col">
+          {/* Carousel controls, slightly top-right. */}
+          <div className="mb-3 flex justify-end gap-2">
+            <CarouselButton dir="left" onClick={() => scrollByCard(-1)} />
+            <CarouselButton dir="right" onClick={() => scrollByCard(1)} />
+          </div>
+
+          {/* Track: 3 cards visible, horizontal scroll. Vertical padding keeps the
+              hover-lift from being clipped. */}
+          <div
+            ref={trackRef}
+            className="flex min-h-0 flex-1 snap-x snap-mandatory gap-4 overflow-x-auto px-1 py-3"
+          >
+            {CASES.map((c, i) => {
+              const unlocked = isCaseUnlocked(c.id, save.solvedCases)
+              const solved = save.solvedCases.includes(c.id)
+              return (
+                <Folder
+                  key={c.id}
+                  c={c}
+                  unlocked={unlocked}
+                  solved={solved}
+                  onOpen={() => unlocked && game.openCase(c.id)}
+                />
+              )
+            })}
+          </div>
+        </div>
       </div>
     </div>
   )
 }
 
-function Folder({ c, index, unlocked, solved, onOpen }) {
+function CarouselButton({ dir, onClick }) {
+  const Icon = dir === 'left' ? ChevronLeft : ChevronRight
+  return (
+    <button
+      onClick={onClick}
+      className="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-700 bg-zinc-900 text-zinc-400 transition-colors hover:border-zinc-500 hover:text-zinc-100"
+      aria-label={dir === 'left' ? 'Previous' : 'Next'}
+    >
+      <Icon className="h-4 w-4" strokeWidth={2} />
+    </button>
+  )
+}
+
+// Each card is 1/3 of the track width (minus the gaps) so exactly three show.
+const CARD_WIDTH = 'w-[calc((100%-2rem)/3)]'
+
+function Folder({ c, unlocked, solved, onOpen }) {
   if (!unlocked) {
     return (
-      <div className="flex w-56 shrink-0 cursor-not-allowed flex-col items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-900/40 px-4 py-6">
-        <Lock className="h-7 w-7 text-zinc-700" strokeWidth={1.5} />
+      <div
+        data-card
+        className={`${CARD_WIDTH} flex min-h-0 shrink-0 snap-start cursor-not-allowed flex-col items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-800/60 px-5 py-6`}
+      >
+        <Lock className="h-7 w-7 text-zinc-600" strokeWidth={1.5} />
       </div>
     )
   }
 
   return (
     <button
+      data-card
       onClick={onOpen}
-      style={{ marginTop: `${(index % 3) * 14}px` }}
-      className="group relative flex w-56 shrink-0 flex-col justify-between rounded-2xl border border-zinc-700 bg-zinc-800 px-5 py-5 text-left text-zinc-200 transition-transform hover:-translate-y-2 hover:border-zinc-500 focus:-translate-y-2"
+      className={`${CARD_WIDTH} group relative flex min-h-0 shrink-0 snap-start flex-col justify-between rounded-2xl border border-zinc-100 bg-zinc-950 px-5 py-5 text-left text-zinc-200 transition-transform hover:-translate-y-1.5 focus:-translate-y-1.5`}
     >
       {/* Status chip */}
       <div className="mb-4 flex items-start justify-end">
         <span
           className={`rounded-full px-2 py-0.5 text-[8px] font-bold uppercase tracking-widest ${
-            solved
-              ? 'bg-zinc-200 text-zinc-900'
-              : 'border border-zinc-600 text-zinc-400'
+            solved ? 'bg-zinc-100 text-zinc-900' : 'border border-zinc-600 text-zinc-400'
           }`}
         >
           {solved ? 'CLOSED' : 'UNRESOLVED'}
