@@ -2,6 +2,7 @@ import { Fragment, useState } from 'react'
 import { gradeReport } from '../engine/verification.js'
 import { LockedCase } from './CrimeSceneTab.jsx'
 import Dropdown from './Dropdown.jsx'
+import CaseStamp from './CaseStamp.jsx'
 
 export default function ReportCardTab({ caseData, unlocked, game }) {
   const report = caseData.report
@@ -24,9 +25,16 @@ export default function ReportCardTab({ caseData, unlocked, game }) {
   // Split the template on {{tokens}} and interleave dropdowns.
   const parts = report.template.split(/(\{\{\w+\}\})/g)
 
+  const stamped = alreadySolved || graded?.correct
+
   return (
     <div className="h-full overflow-y-auto px-8 py-7">
-      <div className="mx-auto max-w-3xl">
+      <div className="relative mx-auto max-w-3xl">
+        {/* Completion stamp overlays the top-right once the report is correct. */}
+        {stamped && (
+          <CaseStamp className="absolute -top-2 right-0 z-20 scale-150" rotate={-16} />
+        )}
+
         <div className="mb-6">
           <h2 className="text-2xl font-semibold text-zinc-100">Report Card</h2>
           <p className="mt-1 text-xs text-zinc-500">

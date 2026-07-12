@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { ChevronLeft, ChevronRight, Lock } from 'lucide-react'
 import { CASES, isCaseUnlocked } from '../cases/index.js'
+import CaseStamp from '../components/CaseStamp.jsx'
 
 export default function LevelSelect({ game }) {
   const { save } = game
@@ -41,10 +42,11 @@ export default function LevelSelect({ game }) {
           </div>
 
           {/* Track: 3 cards visible, horizontal scroll. Vertical padding keeps the
-              hover-lift from being clipped. */}
+              hover-lift from being clipped; no horizontal inset so the third
+              card's right edge lines up with the chevron controls above. */}
           <div
             ref={trackRef}
-            className="flex min-h-0 flex-1 snap-x snap-mandatory gap-4 overflow-x-auto px-1 py-3"
+            className="flex min-h-0 flex-1 snap-x snap-mandatory gap-4 overflow-x-auto py-3"
           >
             {CASES.map((c, i) => {
               const unlocked = isCaseUnlocked(c.id, save.solvedCases)
@@ -98,30 +100,27 @@ function Folder({ c, unlocked, solved, onOpen }) {
     <button
       data-card
       onClick={onOpen}
-      className={`${CARD_WIDTH} group relative flex min-h-0 shrink-0 snap-start flex-col justify-between rounded-2xl border border-zinc-100 bg-zinc-950 px-5 py-5 text-left text-zinc-200 transition-transform hover:-translate-y-1.5 focus:-translate-y-1.5`}
+      className={`${CARD_WIDTH} group relative flex min-h-0 shrink-0 snap-start flex-col justify-between overflow-hidden rounded-2xl border border-zinc-100 bg-zinc-950 px-5 py-5 text-left text-zinc-200 transition-transform hover:-translate-y-1.5 focus:-translate-y-1.5`}
     >
-      {/* Status chip */}
-      <div className="mb-4 flex items-start justify-end">
-        <span
-          className={`rounded-full px-2 py-0.5 text-[8px] font-bold uppercase tracking-widest ${
-            solved ? 'bg-zinc-100 text-zinc-900' : 'border border-zinc-600 text-zinc-400'
-          }`}
-        >
-          {solved ? 'CLOSED' : 'UNRESOLVED'}
-        </span>
+      {/* Vertical file code down the top-right corner. */}
+      <div
+        className="pointer-events-none absolute right-4 top-4 text-sm font-bold uppercase tracking-[0.3em] text-zinc-500"
+        style={{ writingMode: 'vertical-rl' }}
+      >
+        FILE_{c.id.split('_')[1]}//
       </div>
 
-      <div>
-        <div className="mb-1 text-[10px] uppercase tracking-[0.25em] text-zinc-500">
-          FILE_{c.id.split('_')[1]}//
-        </div>
+      <div className="mt-auto">
         <h3 className="text-xl font-semibold leading-tight text-zinc-100">{c.title}</h3>
-        <p className="mt-2 text-[11px] leading-snug text-zinc-400">{c.teaser}</p>
+        <p className="mt-2 pr-6 text-[11px] leading-snug text-zinc-400">{c.teaser}</p>
       </div>
 
       <div className="mt-4 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-zinc-500 opacity-0 transition-opacity group-hover:opacity-100">
         open file &rarr;
       </div>
+
+      {/* Completion stamp, bottom-right, when the case is solved. */}
+      {solved && <CaseStamp className="absolute bottom-4 right-4" />}
     </button>
   )
 }
