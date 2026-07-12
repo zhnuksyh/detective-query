@@ -62,7 +62,7 @@ export default function GameDashboard({ game }) {
   return (
     <div className="flex h-full w-full flex-col">
       {/* Case header */}
-      <header className="flex items-center justify-between border-b border-zinc-800 px-8 py-4">
+      <header className="flex items-center justify-between border-b border-zinc-800 px-10 py-4">
         <div className="flex items-center gap-4">
           <button
             onClick={() => game.setScreen('levels')}
