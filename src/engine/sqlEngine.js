@@ -1,5 +1,14 @@
 let sqlPromise = null
 
+/** Peel .default layers off an interop-wrapped module until a function surfaces. */
+function unwrapFn(mod) {
+  let cur = mod
+  for (let i = 0; i < 4 && cur && typeof cur !== 'function'; i++) {
+    cur = cur.default
+  }
+  return cur
+}
+
 /**
  * Lazily initialise the sql.js Wasm runtime exactly once.
  *
@@ -14,15 +23,22 @@ export function getSqlJs() {
   if (!sqlPromise) {
     sqlPromise = (async () => {
       const [sqlModule, wasmModule] = await Promise.all([
-        import('sql.js'),
+        // Import the explicit dist entry, not the bare "sql.js" specifier: under
+        // Vite dev the package's module field doesn't reliably expose initSqlJs,
+        // whereas the dist UMD file does (as the default export).
+        import('sql.js/dist/sql-wasm.js'),
         // Vite resolves this to a hashed asset URL at build time; the ?url import
         // is now evaluated lazily rather than at module top, so it never blocks
         // (or crashes) the initial render.
         import('sql.js/dist/sql-wasm.wasm?url'),
       ])
-      // sql.js is a UMD module; under Vite's dev/prod ESM interop the init
-      // function can land on `.default` or be the namespace itself. Handle both.
-      const initSqlJs = sqlModule.default || sqlModule
+      // sql.js is a UMD module. Depending on Vite dev vs. prod interop the init
+      // function can be the namespace, `.default`, or double-wrapped
+      // `.default.default`. Unwrap until we actually hold a function.
+      const initSqlJs = unwrapFn(sqlModule)
+      if (typeof initSqlJs !== 'function') {
+        throw new Error('sql.js init export not found on module')
+      }
       const wasmUrl = wasmModule.default || wasmModule
       return initSqlJs({ locateFile: () => wasmUrl })
     })()

@@ -6,8 +6,10 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   base: './',
   plugins: [react()],
-  // sql.js ships a wasm binary; keep it out of dep pre-bundling.
   optimizeDeps: {
-    exclude: ['sql.js'],
+    // Pre-bundle the sql.js dist entry so Vite converts its CJS/UMD form into a
+    // clean ESM module with a proper default export. Excluding it (the old
+    // setup) left the default export unwired in dev, so initSqlJs was missing.
+    include: ['sql.js/dist/sql-wasm.js'],
   },
 })
