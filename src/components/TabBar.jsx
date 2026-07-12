@@ -62,10 +62,12 @@ function Tab({ tab, isActive, onSelect, style }) {
         className="absolute inset-0"
         preserveAspectRatio="none"
       >
-        {/* Fill: a closed shape (bottom edge included) so the interior paints. */}
+        {/* Fill: a closed shape (bottom edge included) so the interior paints.
+            Inactive tabs use a lowered opacity so they read as recessed. */}
         <path
           d={`${CLOSED_PATH} L 1 ${H} Z`}
           fill={isActive ? '#09090b' : '#f4f4f5'}
+          fillOpacity={isActive ? 1 : 0.55}
         />
         {/* Stroke: open at the bottom for the active tab, closed for inactive. */}
         <path
@@ -78,7 +80,7 @@ function Tab({ tab, isActive, onSelect, style }) {
       </svg>
       <span
         className={`relative z-10 font-display text-[11px] font-semibold tracking-widest ${
-          isActive ? 'text-zinc-100' : 'text-zinc-500'
+          isActive ? 'text-zinc-100' : 'text-zinc-950'
         }`}
       >
         {tab.label}
