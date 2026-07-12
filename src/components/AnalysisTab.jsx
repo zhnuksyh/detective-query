@@ -53,9 +53,9 @@ export default function AnalysisTab({ caseData, db, dbError, game, unlocked, onU
   if (!caseData.schemaSql) return <LockedCase caseData={caseData} />
 
   return (
-    <div className="flex h-full">
+    <div className="flex h-full gap-4 p-5">
       {/* Main workspace */}
-      <div className="flex min-w-0 flex-1 flex-col" onKeyDown={onKeyDown}>
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-xl border border-zinc-800" onKeyDown={onKeyDown}>
         {/* SQL input */}
         <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-1.5">
           <span className="text-[10px] uppercase tracking-[0.25em] text-zinc-500">
@@ -114,7 +114,7 @@ export default function AnalysisTab({ caseData, db, dbError, game, unlocked, onU
       </div>
 
       {/* Detective's Notebook sidebar */}
-      <aside className="flex w-72 shrink-0 flex-col border-l border-zinc-800 bg-zinc-900/40">
+      <aside className="flex w-72 shrink-0 flex-col overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/40">
         <div className="border-b border-zinc-800 px-4 py-2 text-[10px] uppercase tracking-[0.25em] text-zinc-500">
           detective's notebook
         </div>
