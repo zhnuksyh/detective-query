@@ -68,18 +68,22 @@ function Tab({ tab, isActive, onSelect, style }) {
           d={`${CLOSED_PATH} L 1 ${H} Z`}
           fill={isActive ? '#09090b' : '#71717a'}
         />
-        {/* Stroke: open at the bottom for the active tab, closed for inactive. */}
+        {/* Top + side outline. Active = white; inactive = darker grey. */}
         <path
-          d={isActive ? OPEN_PATH : `${CLOSED_PATH} L 1 ${H}`}
+          d={isActive ? OPEN_PATH : CLOSED_PATH}
           fill="none"
           stroke={isActive ? '#fafafa' : '#52525b'}
           strokeWidth={isActive ? 1.5 : 1}
           strokeLinejoin="round"
         />
+        {/* Inactive tabs carry the card's white top border along their bottom edge. */}
+        {!isActive && (
+          <path d={`M 0 ${H - 0.75} L ${W} ${H - 0.75}`} stroke="#f4f4f5" strokeWidth="1.5" />
+        )}
       </svg>
       <span
         className={`relative z-10 font-display text-[11px] font-semibold tracking-widest ${
-          isActive ? 'text-zinc-100' : 'text-zinc-200'
+          isActive ? 'text-zinc-100' : 'text-zinc-950'
         }`}
       >
         {tab.label}
