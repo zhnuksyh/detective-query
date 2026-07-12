@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { ChevronLeft } from 'lucide-react'
 import { getCase } from '../cases/index.js'
 import { createDatabase } from '../engine/sqlEngine.js'
 import TabBar from '../components/TabBar.jsx'
@@ -64,14 +65,15 @@ export default function GameDashboard({ game }) {
       {/* Case header — its inner container matches the content-card container
           below (same px-6 outer padding + max-w-4xl), so their left/right edges
           line up exactly. */}
-      <header className="border-b border-zinc-800 px-6 py-4">
+      <header className="px-6 py-4">
         <div className="mx-auto flex w-full max-w-4xl items-center justify-between">
           <div className="flex items-center gap-4">
             <button
               onClick={() => game.setScreen('levels')}
-              className="text-[11px] uppercase tracking-[0.3em] text-zinc-500 hover:text-zinc-100"
+              className="flex items-center gap-1 text-[11px] uppercase tracking-[0.3em] text-zinc-500 hover:text-zinc-100"
             >
-              &larr; files
+              <ChevronLeft className="h-3.5 w-3.5" strokeWidth={2} />
+              files
             </button>
             <div className="h-4 w-px bg-zinc-800" />
             <span className="text-sm font-medium tracking-wide text-zinc-200">{caseData.title}</span>
