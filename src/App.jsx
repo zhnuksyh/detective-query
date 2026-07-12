@@ -6,6 +6,7 @@ import MainMenu from './screens/MainMenu.jsx'
 import LevelSelect from './screens/LevelSelect.jsx'
 import Options from './screens/Options.jsx'
 import Credits from './screens/Credits.jsx'
+import Guide from './screens/Guide.jsx'
 
 // The dashboard drags in sql.js, CodeMirror, and TanStack Table. Loading it
 // lazily keeps all of that OUT of the initial bundle, so the menu and level
@@ -43,6 +44,7 @@ export default function App() {
           {game.screen === 'levels' && <LevelSelect game={game} play={play} />}
           {game.screen === 'options' && <Options game={game} play={play} />}
           {game.screen === 'credits' && <Credits game={game} play={play} />}
+          {game.screen === 'guide' && <Guide game={game} play={play} />}
           {game.screen === 'game' && (
             <Suspense fallback={<DashboardLoading />}>
               <GameDashboard game={game} play={play} shake={shake} />
