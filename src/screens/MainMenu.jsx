@@ -82,9 +82,10 @@ export default function MainMenu({ game }) {
         }}
       />
 
-      {/* Content: left-aligned title + menu, nudged in from the edge. */}
-      <div className="relative flex h-full w-full flex-col justify-center pl-16 pr-10 sm:pl-24">
-        <h1 className="mb-10 font-display text-4xl font-black leading-none tracking-tight text-zinc-100 drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)] sm:text-6xl">
+      {/* Content: left-aligned title + menu, sitting slightly above centre and
+          nudged further in from the left edge. */}
+      <div className="relative flex h-full w-full flex-col justify-center pb-24 pl-24 pr-10 sm:pl-36">
+        <h1 className="mb-10 font-display text-3xl font-black leading-none tracking-tight text-zinc-100 drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)] sm:text-5xl">
           DEDUCTIVE<span className="text-[#f26d78]">_</span>QUERY
         </h1>
 
