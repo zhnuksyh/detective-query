@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { AlertCircle, ChevronDown, ChevronUp } from 'lucide-react'
+import { friendlySqlError } from '../engine/sqlErrors.js'
 import {
   flexRender,
   getCoreRowModel,
@@ -49,16 +50,13 @@ export default function ResultsTable({ result }) {
   if (result.error) {
     return (
       <div className="p-4">
-        <div className="flex items-start gap-2.5 rounded-xl border border-zinc-700 bg-zinc-900/60 p-3.5">
-          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-amber-400/80" strokeWidth={2} />
-          <div>
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
-              query didn’t run
-            </div>
-            <div className="mt-1 font-mono text-xs leading-relaxed text-zinc-400">
-              {result.error}
-            </div>
-          </div>
+        <div className="flex items-center gap-2.5 rounded-xl border border-zinc-700 bg-zinc-900/60 px-3.5 py-3 text-xs">
+          <AlertCircle className="h-4 w-4 shrink-0 text-amber-400/80" strokeWidth={2} />
+          <span className="shrink-0 whitespace-nowrap font-semibold uppercase tracking-wider text-zinc-300">
+            query didn’t run
+          </span>
+          <span className="shrink-0 text-zinc-600">|</span>
+          <span className="text-zinc-400">{friendlySqlError(result.error)}</span>
         </div>
       </div>
     )
