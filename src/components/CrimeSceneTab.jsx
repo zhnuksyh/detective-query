@@ -38,10 +38,12 @@ function toTitleCase(s) {
 }
 
 function Vital({ term, value }) {
+  // value is { line1, line2 }: two stacked lines within the single row cell.
   return (
     <div className="bg-zinc-950 p-4">
-      <dt className="mb-1 text-[10px] uppercase tracking-[0.25em] text-zinc-600">{term}</dt>
-      <dd className="text-sm text-zinc-200">{value}</dd>
+      <dt className="mb-1.5 text-[10px] uppercase tracking-[0.25em] text-zinc-600">{term}</dt>
+      <dd className="text-sm text-zinc-200">{value.line1}</dd>
+      <dd className="text-xs text-zinc-400">{value.line2}</dd>
     </div>
   )
 }
