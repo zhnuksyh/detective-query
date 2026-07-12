@@ -27,6 +27,41 @@ export const case01 = {
   folderTheme: 'drift', // maps to paper.drift tone
   locked: false,
 
+  // This case doubles as the tutorial. Each step pops an assist card; a step
+  // with `tab` auto-switches the player to that tab and anchors the card there.
+  tutorial: [
+    {
+      tab: 'scene',
+      title: 'Welcome, Detective',
+      body: 'You crack cases by querying evidence with SQL — no guessing. Work left to right through the four tabs. Let’s walk through this one.',
+    },
+    {
+      tab: 'scene',
+      title: '1 · Crime Scene',
+      body: 'Read the report carefully. Every fact you’ll need to prove — the time of death, the wound, the missing weapon — is hidden in this narrative.',
+    },
+    {
+      tab: 'board',
+      title: '2 · Case Board',
+      body: 'These are the database tables you can query, with their columns. Dotted lines are foreign keys — they show how tables connect (e.g. alibis.suspect_id → suspects.id).',
+    },
+    {
+      tab: 'analysis',
+      title: '3 · Analysis',
+      body: 'Write SQL here and press RUN. Try “SELECT * FROM suspects;” to list everyone. Then dig deeper — join the keycard logs against the alibis to find who lied.',
+    },
+    {
+      tab: 'analysis',
+      title: 'Tip · The intercept',
+      body: 'When a query returns the right row, a “CLUE VERIFIED” toast appears and unlocks a blank on the Report Card. That’s how you make progress.',
+    },
+    {
+      tab: 'report',
+      title: '4 · Report Card',
+      body: 'Fill each blank from the dropdowns. A blank stays locked until you’ve run the query that proves it — then submit to close the case and unlock the next file. Good luck.',
+    },
+  ],
+
   crimeScene: {
     // Each vital renders as two stacked lines within one row cell.
     victim: { line1: 'Adrian Vale, 54', line2: 'Publisher' },

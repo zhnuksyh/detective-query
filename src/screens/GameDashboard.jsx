@@ -7,6 +7,7 @@ import CrimeSceneTab from '../components/CrimeSceneTab.jsx'
 import CaseBoardTab from '../components/CaseBoardTab.jsx'
 import AnalysisTab from '../components/AnalysisTab.jsx'
 import ReportCardTab from '../components/ReportCardTab.jsx'
+import TutorialOverlay from '../components/TutorialOverlay.jsx'
 
 const TABS = [
   { key: 'scene', label: 'CRIME SCENE' },
@@ -65,8 +66,11 @@ export default function GameDashboard({ game, play, shake }) {
     game.setUnlocks(caseData.id, Array.from(nextSet))
   }
 
+  // Show the guided tutorial only on the tutorial case, until it's dismissed.
+  const showTutorial = Boolean(caseData.tutorial) && !game.save.tutorialDone
+
   return (
-    <div className="flex h-full w-full flex-col">
+    <div className="relative flex h-full w-full flex-col">
       {/* Case header — its inner container matches the content-card container
           below (same px-6 outer padding + max-w-4xl), so their left/right edges
           line up exactly. */}
@@ -132,6 +136,15 @@ export default function GameDashboard({ game, play, shake }) {
           </main>
         </div>
       </div>
+
+      {showTutorial && (
+        <TutorialOverlay
+          steps={caseData.tutorial}
+          onGoToTab={selectTab}
+          onFinish={() => game.setTutorialDone(true)}
+          play={play}
+        />
+      )}
     </div>
   )
 }

@@ -60,6 +60,11 @@ export function useGame() {
     [patch],
   )
 
+  const setTutorialDone = useCallback(
+    (done = true) => patch((s) => ({ ...s, tutorialDone: done })),
+    [patch],
+  )
+
   const hardReset = useCallback(() => {
     setSave(resetState())
     setOpenCaseId(null)
@@ -76,6 +81,7 @@ export function useGame() {
     setNotebook,
     setUnlocks,
     setSettings,
+    setTutorialDone,
     hardReset,
   }
 }

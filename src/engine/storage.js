@@ -14,6 +14,8 @@ const DEFAULT_STATE = {
   unlocks: {},
   // Last case the player opened, for CONTINUE.
   lastCaseId: null,
+  // Whether the Case 01 guided tutorial has been finished/dismissed.
+  tutorialDone: false,
   settings: {
     sound: true,
     textScale: 1,
