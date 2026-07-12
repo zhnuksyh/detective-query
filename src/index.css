@@ -23,20 +23,12 @@ body {
   overflow: hidden;
 }
 
-/* Thin custom scrollbars. */
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+/* Hide scrollbars everywhere while keeping scroll functional. */
+* {
+  scrollbar-width: none; /* Firefox */
 }
-::-webkit-scrollbar-track {
-  background: #18181b;
-}
-::-webkit-scrollbar-thumb {
-  background: #3f3f46;
-  border: 2px solid #18181b;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #52525b;
+*::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/Edge */
 }
 
 /* CodeMirror should fill its container and use our mono font. */
