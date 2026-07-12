@@ -13,11 +13,10 @@ const GameDashboard = lazy(() => import('./screens/GameDashboard.jsx'))
 
 export default function App() {
   const game = useGame()
-  const crt = game.save.settings.crt
 
   return (
     <div
-      className={`h-full w-full bg-zinc-950 text-zinc-200 ${crt ? 'crt' : ''}`}
+      className="h-full w-full bg-zinc-950 text-zinc-200"
       style={{ fontSize: `${game.save.settings.textScale}rem` }}
     >
       <ErrorBoundary>
@@ -42,10 +41,9 @@ function DashboardLoading() {
         <div className="mb-3 text-[11px] uppercase tracking-[0.3em] text-zinc-300">
           loading case workspace
         </div>
-        <pre className="text-[11px] leading-relaxed text-zinc-300/70">
+        <pre className="font-mono text-[11px] leading-relaxed text-zinc-500">
 {`> fetching editor + data grid ...
 > preparing sql.js runtime ...`}
-          <span className="ml-0.5 inline-block h-3 w-2 animate-blink bg-zinc-400 align-middle" />
         </pre>
       </div>
     </div>

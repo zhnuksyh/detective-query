@@ -23,36 +23,7 @@ body {
   overflow: hidden;
 }
 
-/* CRT scanline overlay, applied to the whole app shell. */
-.crt::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 50;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0) 0px,
-    rgba(0, 0, 0, 0) 2px,
-    rgba(0, 0, 0, 0.12) 3px,
-    rgba(0, 0, 0, 0.12) 4px
-  );
-}
-
-.crt::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 51;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(0, 0, 0, 0) 55%,
-    rgba(0, 0, 0, 0.55) 100%
-  );
-}
-
-/* Thin custom scrollbars to match the terminal aesthetic. */
+/* Thin custom scrollbars. */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;

@@ -17,7 +17,6 @@ const DEFAULT_STATE = {
   settings: {
     sound: true,
     textScale: 1,
-    crt: true,
   },
 }
 

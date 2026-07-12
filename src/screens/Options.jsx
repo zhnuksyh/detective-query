@@ -20,12 +20,6 @@ export default function Options({ game }) {
           value={settings.sound}
           onChange={(v) => game.setSettings({ sound: v })}
         />
-        <Toggle
-          label="CRT overlay"
-          desc="Scanlines and vignette for that terminal feel."
-          value={settings.crt}
-          onChange={(v) => game.setSettings({ crt: v })}
-        />
 
         <div>
           <div className="mb-2 flex items-center justify-between">

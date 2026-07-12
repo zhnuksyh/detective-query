@@ -27,25 +27,6 @@ export default {
         sans: ['"Poppins"', 'system-ui', 'sans-serif'],
         display: ['"Poppins"', 'system-ui', 'sans-serif'],
       },
-      keyframes: {
-        flicker: {
-          '0%, 100%': { opacity: '1' },
-          '50%': { opacity: '0.82' },
-        },
-        blink: {
-          '0%, 49%': { opacity: '1' },
-          '50%, 100%': { opacity: '0' },
-        },
-        scanline: {
-          '0%': { transform: 'translateY(-100%)' },
-          '100%': { transform: 'translateY(100%)' },
-        },
-      },
-      animation: {
-        flicker: 'flicker 4s ease-in-out infinite',
-        blink: 'blink 1.1s step-end infinite',
-        scanline: 'scanline 8s linear infinite',
-      },
     },
   },
   plugins: [],
