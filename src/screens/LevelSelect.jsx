@@ -102,12 +102,16 @@ function Folder({ c, unlocked, solved, onOpen }) {
       onClick={onOpen}
       className={`${CARD_WIDTH} group relative flex min-h-0 shrink-0 snap-start flex-col justify-between overflow-hidden rounded-2xl border border-zinc-100 bg-zinc-950 px-5 py-5 text-left text-zinc-200 transition-transform hover:-translate-y-1.5 focus:-translate-y-1.5`}
     >
-      {/* Vertical file code down the top-right corner. */}
+      {/* Vertical file code down the top-right corner. Letters are heavy; the
+          "_" and "/" separators are thin for contrast. */}
       <div
-        className="pointer-events-none absolute right-3 top-4 text-3xl font-black uppercase tracking-[0.3em] text-zinc-500/20"
+        className="pointer-events-none absolute right-3 top-4 text-3xl uppercase tracking-[0.15em] text-zinc-500/20"
         style={{ writingMode: 'vertical-rl' }}
       >
-        FILE_{c.id.split('_')[1]}//
+        <span className="font-black">FILE</span>
+        <span className="font-light">_</span>
+        <span className="font-black">{c.id.split('_')[1]}</span>
+        <span className="font-light">//</span>
       </div>
 
       <div className="mt-auto">
