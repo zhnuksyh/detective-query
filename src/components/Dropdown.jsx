@@ -31,40 +31,42 @@ export default function Dropdown({ value, options, onChange, tone = 'idle' }) {
         : 'border-zinc-600 text-zinc-100 hover:border-zinc-400'
 
   return (
-    // Height-0 anchor sits on the text baseline; the absolutely-centred pill is
-    // then translated to the line's optical middle so it's never high or low.
+    // Zero-height anchor centred on the text line. The inner wrapper is the real
+    // pill box so the option list can hang directly off the pill's bottom edge.
     <span
       ref={ref}
-      className="relative mx-1.5 inline-flex h-0 w-[10rem] align-middle"
+      className={`relative mx-1.5 inline-flex h-0 w-[8.5rem] align-middle ${open ? 'z-40' : ''}`}
     >
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        className={`absolute left-0 top-1/2 flex w-full -translate-y-1/2 items-center justify-center rounded-full border bg-zinc-950 px-5 py-2.5 text-sm transition-colors focus:outline-none ${toneCls}`}
-      >
-        {/*   keeps a full-height line box when empty so the pill never collapses. */}
-        <span className="leading-normal">{value || ' '}</span>
-      </button>
+      <span className="absolute left-0 top-1/2 w-full -translate-y-1/2">
+        <button
+          type="button"
+          onClick={() => setOpen((o) => !o)}
+          className={`flex w-full items-center justify-center rounded-full border bg-zinc-950 px-4 py-1.5 text-sm transition-colors focus:outline-none ${toneCls}`}
+        >
+          {/* Non-breaking space keeps a full-height line box when the value is empty. */}
+          <span className="leading-normal">{value || ' '}</span>
+        </button>
 
-      {open && (
-        <div className="absolute left-0 top-full z-30 mt-2 min-w-full overflow-hidden rounded-2xl border border-zinc-700 bg-zinc-900 py-1 shadow-xl shadow-black/40">
-          {options.map((opt) => (
-            <button
-              key={opt}
-              type="button"
-              onClick={() => {
-                onChange(opt)
-                setOpen(false)
-              }}
-              className={`block w-full whitespace-nowrap px-4 py-2 text-left text-sm transition-colors hover:bg-zinc-800 ${
-                opt === value ? 'text-zinc-100' : 'text-zinc-400'
-              }`}
-            >
-              {opt}
-            </button>
-          ))}
-        </div>
-      )}
+        {open && (
+          <div className="absolute left-0 top-full z-30 mt-1 w-full overflow-hidden rounded-2xl border border-zinc-700 bg-zinc-900 py-1 shadow-xl shadow-black/40">
+            {options.map((opt) => (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => {
+                  onChange(opt)
+                  setOpen(false)
+                }}
+                className={`block w-full whitespace-nowrap px-4 py-2 text-left text-sm transition-colors hover:bg-zinc-800 ${
+                  opt === value ? 'text-zinc-100' : 'text-zinc-400'
+                }`}
+              >
+                {opt}
+              </button>
+            ))}
+          </div>
+        )}
+      </span>
     </span>
   )
 }
