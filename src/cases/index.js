@@ -3,9 +3,8 @@ import { case02 } from './case02.js'
 import { case03 } from './case03.js'
 
 /**
- * Cases 04–05 are locked placeholders for now. They carry enough metadata to
- * render the filing-cabinet folders (code, tag, teaser, theme) but no playable
- * schema yet.
+ * Case 04 is a "coming soon" placeholder — it renders as a folder but has no
+ * playable schema yet. `comingSoon` marks it for the level-select card.
  */
 const lockedStub = (over) => ({
   locked: true,
@@ -27,14 +26,7 @@ export const CASES = [
     title: 'Dead Signal',
     folderTheme: 'signal',
     teaser: 'The last text was sent at 02:14. His phone was already off the grid at 01:50.',
-  }),
-  lockedStub({
-    id: 'case_05',
-    code: 'CODE_05',
-    tag: 'AFTER WORK',
-    title: 'After Work',
-    folderTheme: 'work',
-    teaser: 'Everyone clocked out. The badge reader remembers one who never did.',
+    comingSoon: true,
   }),
 ]
 

@@ -99,13 +99,56 @@ const CARD_WIDTH = 'w-[calc((100%-2rem)/3)]'
 
 function Folder({ c, index = 0, unlocked, solved, onOpen, onHover }) {
   if (!unlocked) {
+    // "Coming soon" placeholder (no case content yet).
+    if (c.comingSoon) {
+      return (
+        <div
+          data-card
+          style={{ '--stagger-i': index }}
+          className={`${CARD_WIDTH} stagger-item flex min-h-0 shrink-0 animate-fade-up snap-start cursor-not-allowed flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-zinc-800 bg-zinc-900/30 px-5 py-6`}
+        >
+          <Lock className="h-6 w-6 text-zinc-700" strokeWidth={1.5} />
+          <span className="text-[11px] font-bold uppercase tracking-[0.3em] text-zinc-600">
+            Coming soon
+          </span>
+        </div>
+      )
+    }
+
+    // Locked but real case — show a blurred silhouette of its title/teaser as a
+    // teaser, with a lock badge, so the player sees there's something there.
     return (
       <div
         data-card
         style={{ '--stagger-i': index }}
-        className={`${CARD_WIDTH} stagger-item flex min-h-0 shrink-0 animate-fade-up snap-start cursor-not-allowed flex-col items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-800/60 px-5 py-6`}
+        className={`${CARD_WIDTH} stagger-item relative flex min-h-0 shrink-0 animate-fade-up snap-start cursor-not-allowed flex-col justify-between overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/50 px-5 py-5`}
       >
-        <Lock className="h-7 w-7 text-zinc-600" strokeWidth={1.5} />
+        {/* Vertical file code, same as unlocked cards but dimmer. */}
+        <div
+          className="pointer-events-none absolute right-3 top-4 text-3xl uppercase tracking-[0.15em] text-zinc-500/10"
+          style={{ writingMode: 'vertical-rl' }}
+        >
+          <span className="font-black">FILE</span>
+          <span className="font-light">_</span>
+          <span className="font-black">{c.id.split('_')[1]}</span>
+          <span className="font-light">//</span>
+        </div>
+
+        {/* Blurred title + teaser = the silhouette. */}
+        <div className="mt-auto select-none blur-[5px]">
+          <h3 className="text-xl font-semibold leading-tight text-zinc-300">{c.title}</h3>
+          <p className="mt-2 pr-6 text-[11px] leading-snug text-zinc-500">{c.teaser}</p>
+        </div>
+
+        {/* Lock badge overlay. */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-2">
+            <Lock className="h-7 w-7 text-zinc-500" strokeWidth={1.5} />
+            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-500">
+              Locked
+            </span>
+          </div>
+        </div>
       </div>
     )
   }
