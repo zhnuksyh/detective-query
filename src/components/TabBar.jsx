@@ -1,32 +1,88 @@
 /**
- * Folder-style tabs matching the reference: rounded-top trapezoids with angled
- * sides. The active tab is black with a white outline and NO bottom edge, so it
- * merges into the bordered content card below it (see GameDashboard). Inactive
- * tabs are white with gray text.
+ * Folder-style tabs (reference image #6): each tab is a rounded-top trapezoid
+ * with angled sides. Fill and outline are drawn as ONE SVG <path> per tab, so
+ * they can never drift apart the way a clip-path + separate border did.
  *
- * The angled + rounded shape is drawn with an inline SVG background per tab so
- * the outline can follow the trapezoid exactly (clip-path can't stroke a border).
+ * - Active tab: black fill, white stroke on the top + sides, OPEN at the bottom
+ *   so it merges into the content card below (the folder-file effect).
+ * - Inactive tab: white fill, light-gray full outline, sitting lower/behind.
+ *
+ * Tabs have a fixed width so the SVG path geometry stays crisp and predictable.
  */
+
+// Geometry of one tab, in SVG user units (px). W = bottom width, the top edge
+// is inset by ANGLE on each side; R rounds the top corners.
+const W = 150
+const H = 40
+const ANGLE = 22
+const R = 12
+
+// Full closed outline (used for inactive tabs): rounded top, angled sides,
+// flat bottom, back up the left side.
+const CLOSED_PATH = `
+  M 1 ${H}
+  L ${ANGLE - R * 0.4} ${R}
+  Q ${ANGLE} 1 ${ANGLE + R} 1
+  L ${W - ANGLE - R} 1
+  Q ${W - ANGLE} 1 ${W - ANGLE + R * 0.4} ${R}
+  L ${W - 1} ${H}
+`.trim()
+
+// Open outline (active tab): same top + sides but NOT closed along the bottom.
+const OPEN_PATH = CLOSED_PATH
+
 export default function TabBar({ tabs, active, onSelect }) {
   return (
-    <div className="flex items-end gap-1.5 px-4">
-      {tabs.map((t) => (
-        <Tab key={t.key} tab={t} isActive={t.key === active} onSelect={onSelect} />
+    <div className="relative z-10 flex items-end">
+      {tabs.map((t, i) => (
+        <Tab
+          key={t.key}
+          tab={t}
+          isActive={t.key === active}
+          onSelect={onSelect}
+          // Overlap neighbours slightly so the angled sides tuck together.
+          style={{ marginLeft: i === 0 ? 0 : -ANGLE }}
+        />
       ))}
     </div>
   )
 }
 
-function Tab({ tab, isActive, onSelect }) {
+function Tab({ tab, isActive, onSelect, style }) {
   return (
     <button
       onClick={() => onSelect(tab.key)}
-      className={`tab-shape relative px-8 pb-3 pt-3 font-display text-xs font-bold tracking-widest transition-colors ${
-        isActive ? 'text-zinc-100' : 'text-zinc-400 hover:text-zinc-700'
-      }`}
-      data-active={isActive}
+      style={{ width: W, height: H, ...style, zIndex: isActive ? 20 : 1 }}
+      className="relative flex items-center justify-center"
     >
-      {tab.label}
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        width={W}
+        height={H}
+        className="absolute inset-0"
+        preserveAspectRatio="none"
+      >
+        {/* Fill: a closed shape (bottom edge included) so the interior paints. */}
+        <path
+          d={`${CLOSED_PATH} L 1 ${H} Z`}
+          fill={isActive ? '#09090b' : '#f4f4f5'}
+        />
+        {/* Stroke: open at the bottom for the active tab, closed for inactive. */}
+        <path
+          d={isActive ? OPEN_PATH : `${CLOSED_PATH} L 1 ${H}`}
+          fill="none"
+          stroke={isActive ? '#fafafa' : '#d4d4d8'}
+          strokeWidth={isActive ? 1.5 : 1}
+          strokeLinejoin="round"
+        />
+      </svg>
+      <span
+        className={`relative z-10 font-display text-[11px] font-semibold tracking-widest ${
+          isActive ? 'text-zinc-100' : 'text-zinc-500'
+        }`}
+      >
+        {tab.label}
+      </span>
     </button>
   )
 }

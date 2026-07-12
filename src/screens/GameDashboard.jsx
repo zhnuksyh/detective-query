@@ -71,44 +71,43 @@ export default function GameDashboard({ game }) {
             &larr; files
           </button>
           <div className="h-4 w-px bg-zinc-800" />
-          <div className="flex items-baseline gap-3">
-            <span className="font-display text-sm font-black tracking-wide text-crimson">
-              {caseData.code} // {caseData.tag}
-            </span>
-            <span className="font-display text-sm tracking-wide text-zinc-200">{caseData.title}</span>
-          </div>
+          <span className="text-sm font-medium tracking-wide text-zinc-200">{caseData.title}</span>
         </div>
         <span className="text-[10px] uppercase tracking-[0.3em] text-zinc-600">
           {game.save.solvedCases.includes(caseData.id) ? 'CASE CLOSED' : 'UNRESOLVED'}
         </span>
       </header>
 
-      {/* Folder-card: tabs stick out of the top of a white-outlined content box. */}
-      <div className="flex min-h-0 flex-1 flex-col px-3 pb-3">
-        <TabBar tabs={TABS} active={tab} onSelect={setTab} />
+      {/* Folder-card: tabs stick out of the top of a white-outlined content box.
+          Centred with a max width and generous page padding on all sides. */}
+      <div className="flex min-h-0 flex-1 flex-col items-center px-8 pb-10 pt-6">
+        <div className="flex min-h-0 w-full max-w-4xl flex-1 flex-col">
+          <TabBar tabs={TABS} active={tab} onSelect={setTab} />
 
-        <main className="min-h-0 flex-1 overflow-hidden rounded-2xl rounded-tl-none border border-zinc-100 bg-zinc-950">
-          {tab === 'scene' && <CrimeSceneTab caseData={caseData} />}
-          {tab === 'board' && <CaseBoardTab caseData={caseData} />}
-          {tab === 'analysis' && (
-            <AnalysisTab
-              caseData={caseData}
-              db={db}
-              dbError={dbError}
-              game={game}
-              unlocked={unlocked}
-              onUnlocksChange={persistUnlocks}
-            />
-          )}
-          {tab === 'report' && (
-            <ReportCardTab
-              caseData={caseData}
-              unlocked={unlocked}
-              game={game}
-              goToAnalysis={() => setTab('analysis')}
-            />
-          )}
-        </main>
+          {/* -1px top margin lets the active tab's open bottom merge into the card. */}
+          <main className="-mt-px min-h-0 flex-1 overflow-hidden rounded-2xl border border-zinc-100 bg-zinc-950">
+            {tab === 'scene' && <CrimeSceneTab caseData={caseData} />}
+            {tab === 'board' && <CaseBoardTab caseData={caseData} />}
+            {tab === 'analysis' && (
+              <AnalysisTab
+                caseData={caseData}
+                db={db}
+                dbError={dbError}
+                game={game}
+                unlocked={unlocked}
+                onUnlocksChange={persistUnlocks}
+              />
+            )}
+            {tab === 'report' && (
+              <ReportCardTab
+                caseData={caseData}
+                unlocked={unlocked}
+                game={game}
+                goToAnalysis={() => setTab('analysis')}
+              />
+            )}
+          </main>
+        </div>
       </div>
     </div>
   )
