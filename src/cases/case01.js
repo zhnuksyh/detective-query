@@ -21,7 +21,7 @@ export const case01 = {
   id: 'case_01',
   code: 'CODE_01',
   tag: 'DRIFT',
-  title: 'THE MIDNIGHT DRIFT',
+  title: 'The Midnight Drift',
   teaser:
     'A publisher found slumped over his desk at midnight. Four alibis. One of them drifts from the truth. The keycards never lie.',
   folderTheme: 'drift', // maps to paper.drift tone

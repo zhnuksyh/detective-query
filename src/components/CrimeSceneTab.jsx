@@ -11,9 +11,7 @@ export default function CrimeSceneTab({ caseData }) {
       <div className="mx-auto max-w-3xl">
         <div className="mb-6">
           <h2 className="text-2xl font-semibold text-zinc-100">Crime Scene</h2>
-          <p className="mt-1 text-xs uppercase tracking-[0.25em] text-zinc-500">
-            {toTitleCase(caseData.title)}
-          </p>
+          <p className="mt-1 text-xs text-zinc-500">{caseData.title}</p>
         </div>
 
         {/* Vitals */}
@@ -30,11 +28,6 @@ export default function CrimeSceneTab({ caseData }) {
       </div>
     </div>
   )
-}
-
-/** "THE MIDNIGHT DRIFT" -> "The Midnight Drift" */
-function toTitleCase(s) {
-  return s.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase())
 }
 
 function Vital({ term, value }) {
