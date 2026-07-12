@@ -8,7 +8,6 @@ export default function CaseBoardTab({ caseData }) {
 }
 
 function Board({ tables }) {
-  // Foreign-key edges as stable { from, to } cell-key pairs.
   const edges = useMemo(() => {
     const out = []
     tables.forEach((t) =>
@@ -23,7 +22,7 @@ function Board({ tables }) {
   }, [tables])
 
   const containerRef = useRef(null)
-  const cellRefs = useRef({}) // cellKey -> element
+  const cellRefs = useRef({})
   const [paths, setPaths] = useState([])
 
   const registerCell = useRef((key, el) => {
@@ -38,34 +37,38 @@ function Board({ tables }) {
       if (!container) return
       const base = container.getBoundingClientRect()
       const next = []
-      // Each edge gets its own vertical track in the left gutter so lines never
-      // sit on top of each other. Tracks are spaced 14px apart, closest to the
-      // cards first.
-      edges.forEach((edge, i) => {
+      for (const edge of edges) {
         const a = cellRefs.current[edge.from]
         const b = cellRefs.current[edge.to]
-        if (!a || !b) return
+        if (!a || !b) continue
         const ra = a.getBoundingClientRect()
         const rb = b.getBoundingClientRect()
-        // Anchor on the LEFT edge of both cells; the whole route lives in the
-        // gutter to the left of every card, so it can't cross a table.
-        const x1 = ra.left - base.left
-        const y1 = ra.top - base.top + ra.height / 2
-        const x2 = rb.left - base.left
-        const y2 = rb.top - base.top + rb.height / 2
-        const trackX = Math.min(x1, x2) - 18 - i * 14
-        next.push(roundedElbow(x1, y1, x2, y2, trackX))
-      })
+        // Anchor each end on whichever horizontal side faces the other cell, so
+        // the connector loops around the outside of the cards, never through them.
+        const aCx = ra.left + ra.width / 2
+        const bCx = rb.left + rb.width / 2
+        const aRight = bCx >= aCx
+        const bRight = aCx > bCx
+        const p1 = {
+          x: (aRight ? ra.right : ra.left) - base.left,
+          y: ra.top - base.top + ra.height / 2,
+          side: aRight ? 1 : -1,
+        }
+        const p2 = {
+          x: (bRight ? rb.right : rb.left) - base.left,
+          y: rb.top - base.top + rb.height / 2,
+          side: bRight ? 1 : -1,
+        }
+        next.push(sideAwarePath(p1, p2))
+      }
       setPaths((prev) =>
         prev.length === next.length && prev.every((p, i) => p === next[i]) ? prev : next,
       )
     }
-
     const schedule = () => {
       cancelAnimationFrame(frame)
       frame = requestAnimationFrame(measure)
     }
-
     schedule()
     const ro = new ResizeObserver(schedule)
     if (containerRef.current) ro.observe(containerRef.current)
@@ -77,26 +80,32 @@ function Board({ tables }) {
     }
   }, [edges])
 
-  // Reserve gutter width based on how many FK tracks we need.
-  const gutter = 40 + edges.length * 14
-
   return (
-    <div className="h-full overflow-auto px-8 py-8">
-      <div className="mx-auto max-w-3xl">
+    <div className="h-full overflow-auto px-6 py-6">
+      <div className="mx-auto max-w-4xl">
         <h2 className="mb-1 text-2xl font-semibold text-zinc-100">Case Board</h2>
         <p className="mb-8 text-xs text-zinc-500">
-          The tables you can query. Curved lines trace foreign keys to the column they reference.
+          The tables you can query. Dotted lines trace foreign keys to the column they reference.
         </p>
 
         <div ref={containerRef} className="relative">
-          <svg className="pointer-events-none absolute inset-0 h-full w-full overflow-visible">
+          <svg className="pointer-events-none absolute inset-0 z-0 h-full w-full overflow-visible">
             {paths.map((d, i) => (
-              <path key={i} d={d} fill="none" stroke="#71717a" strokeWidth="1.5" />
+              <path
+                key={i}
+                d={d}
+                fill="none"
+                stroke="#a1a1aa"
+                strokeWidth="1.5"
+                strokeDasharray="2 4"
+                strokeLinecap="round"
+                opacity="0.4"
+              />
             ))}
           </svg>
 
-          {/* Cards live in a single right-hand column; the left gutter is line-only. */}
-          <div className="flex flex-col gap-6" style={{ paddingLeft: gutter }}>
+          {/* Cards flow into rows; unrelated tables share a row, relationships stay near. */}
+          <div className="relative z-10 flex flex-wrap gap-x-8 gap-y-8">
             {tables.map((t) => (
               <TableCard key={t.name} table={t} registerCell={registerCell} />
             ))}
@@ -109,7 +118,7 @@ function Board({ tables }) {
 
 function TableCard({ table, registerCell }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-zinc-700 bg-zinc-900">
+    <div className="w-56 shrink-0 overflow-hidden rounded-2xl border border-zinc-700 bg-zinc-900">
       <div className="border-b border-zinc-800 px-4 py-3">
         <span className="text-sm font-semibold tracking-wide text-zinc-100">{table.name}</span>
       </div>
@@ -138,20 +147,12 @@ function cellKey(table, col) {
 }
 
 /**
- * SVG path leaving the left edge of (x1,y1), routing down a dedicated vertical
- * track at trackX, and re-entering the left edge of (x2,y2), rounded corners.
+ * Cubic Bézier between two anchor points that each stick out horizontally from
+ * their card's near side, so the curve loops around the outside of the cards.
  */
-function roundedElbow(x1, y1, x2, y2, trackX) {
-  const r = 10
-  const dir = y2 > y1 ? 1 : -1
-  const vr = Math.min(r, Math.abs(y2 - y1) / 2)
-  const hr = Math.min(r, Math.abs(x1 - trackX), Math.abs(x2 - trackX))
-  return [
-    `M ${x1} ${y1}`,
-    `H ${trackX + hr}`,
-    `Q ${trackX} ${y1} ${trackX} ${y1 + dir * vr}`,
-    `V ${y2 - dir * vr}`,
-    `Q ${trackX} ${y2} ${trackX + hr} ${y2}`,
-    `H ${x2}`,
-  ].join(' ')
+function sideAwarePath(p1, p2) {
+  const reach = Math.max(28, Math.abs(p2.x - p1.x) * 0.4)
+  const c1x = p1.x + p1.side * reach
+  const c2x = p2.x + p2.side * reach
+  return `M ${p1.x} ${p1.y} C ${c1x} ${p1.y}, ${c2x} ${p2.y}, ${p2.x} ${p2.y}`
 }
