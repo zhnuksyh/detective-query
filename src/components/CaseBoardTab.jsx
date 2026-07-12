@@ -151,27 +151,30 @@ function cellKey(table, col) {
  * their card's near side, so the curve loops around the outside of the cards.
  */
 function sideAwarePath(p1, p2) {
-  // Route: short horizontal stub out of each cell, then a straight run along the
-  // vertical midpoint between the two anchors, with rounded corners at the two
-  // bends. The horizontal middle segment stays perfectly straight.
-  const stub = 16
-  const x1 = p1.x + p1.side * stub // where cell 1's stub ends
-  const x2 = p2.x + p2.side * stub // where cell 2's stub ends
-  const my = (p1.y + p2.y) / 2 // vertical middle
-  const r = Math.min(10, Math.abs(my - p1.y), Math.abs(my - p2.y), Math.abs(x2 - x1) / 2 || 10)
-  const d1 = my > p1.y ? 1 : -1
-  const d2 = my > p2.y ? 1 : -1
-  const sx = Math.sign(x2 - x1) || 1 // direction of the middle run
+  // Clean "Z" elbow that never tangles: run horizontally out from each cell to a
+  // single shared mid-X, then one vertical segment bridges the two rows there.
+  // Rounded corners at the two bends. If the anchors already share a row, it's a
+  // straight horizontal line.
+  const midX = (p1.x + p2.x) / 2
+  if (Math.abs(p2.y - p1.y) < 1) {
+    return `M ${p1.x} ${p1.y} H ${p2.x}`
+  }
+  const dir = p2.y > p1.y ? 1 : -1 // vertical travel direction
+  const sx1 = Math.sign(midX - p1.x) || 1 // horizontal direction leg 1
+  const sx2 = Math.sign(p2.x - midX) || 1 // horizontal direction leg 2
+  const r = Math.min(
+    10,
+    Math.abs(midX - p1.x),
+    Math.abs(p2.x - midX),
+    Math.abs(p2.y - p1.y) / 2,
+  )
 
   return [
     `M ${p1.x} ${p1.y}`,
-    `H ${x1 - p1.side * 0}`, // stub out from cell 1
-    `Q ${x1} ${p1.y} ${x1} ${p1.y + d1 * r}`, // round into vertical
-    `V ${my - d1 * r}`,
-    `Q ${x1} ${my} ${x1 + sx * r} ${my}`, // round onto the middle line
-    `H ${x2 - sx * r}`, // straight middle run
-    `Q ${x2} ${my} ${x2} ${my + d2 * r}`, // round off the middle line
-    `V ${p2.y - d2 * r}`,
-    `Q ${x2} ${p2.y} ${p2.x} ${p2.y}`, // round into cell 2
+    `H ${midX - sx1 * r}`,
+    `Q ${midX} ${p1.y} ${midX} ${p1.y + dir * r}`, // round down/up onto the vertical
+    `V ${p2.y - dir * r}`,
+    `Q ${midX} ${p2.y} ${midX + sx2 * r} ${p2.y}`, // round onto the second leg
+    `H ${p2.x}`,
   ].join(' ')
 }
