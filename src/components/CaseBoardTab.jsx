@@ -151,8 +151,27 @@ function cellKey(table, col) {
  * their card's near side, so the curve loops around the outside of the cards.
  */
 function sideAwarePath(p1, p2) {
-  const reach = Math.max(28, Math.abs(p2.x - p1.x) * 0.4)
-  const c1x = p1.x + p1.side * reach
-  const c2x = p2.x + p2.side * reach
-  return `M ${p1.x} ${p1.y} C ${c1x} ${p1.y}, ${c2x} ${p2.y}, ${p2.x} ${p2.y}`
+  // Route: short horizontal stub out of each cell, then a straight run along the
+  // vertical midpoint between the two anchors, with rounded corners at the two
+  // bends. The horizontal middle segment stays perfectly straight.
+  const stub = 16
+  const x1 = p1.x + p1.side * stub // where cell 1's stub ends
+  const x2 = p2.x + p2.side * stub // where cell 2's stub ends
+  const my = (p1.y + p2.y) / 2 // vertical middle
+  const r = Math.min(10, Math.abs(my - p1.y), Math.abs(my - p2.y), Math.abs(x2 - x1) / 2 || 10)
+  const d1 = my > p1.y ? 1 : -1
+  const d2 = my > p2.y ? 1 : -1
+  const sx = Math.sign(x2 - x1) || 1 // direction of the middle run
+
+  return [
+    `M ${p1.x} ${p1.y}`,
+    `H ${x1 - p1.side * 0}`, // stub out from cell 1
+    `Q ${x1} ${p1.y} ${x1} ${p1.y + d1 * r}`, // round into vertical
+    `V ${my - d1 * r}`,
+    `Q ${x1} ${my} ${x1 + sx * r} ${my}`, // round onto the middle line
+    `H ${x2 - sx * r}`, // straight middle run
+    `Q ${x2} ${my} ${x2} ${my + d2 * r}`, // round off the middle line
+    `V ${p2.y - d2 * r}`,
+    `Q ${x2} ${p2.y} ${p2.x} ${p2.y}`, // round into cell 2
+  ].join(' ')
 }
