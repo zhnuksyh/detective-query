@@ -1,6 +1,7 @@
 import { Fragment, useState } from 'react'
 import { gradeReport } from '../engine/verification.js'
 import { LockedCase } from './CrimeSceneTab.jsx'
+import Dropdown from './Dropdown.jsx'
 
 export default function ReportCardTab({ caseData, unlocked, game }) {
   const report = caseData.report
@@ -24,7 +25,7 @@ export default function ReportCardTab({ caseData, unlocked, game }) {
   const parts = report.template.split(/(\{\{\w+\}\})/g)
 
   return (
-    <div className="h-full overflow-y-auto px-6 py-6">
+    <div className="h-full overflow-y-auto px-8 py-7">
       <div className="mx-auto max-w-3xl">
         <div className="mb-6">
           <h2 className="text-2xl font-semibold text-zinc-100">Report Card</h2>
@@ -34,8 +35,8 @@ export default function ReportCardTab({ caseData, unlocked, game }) {
           </p>
         </div>
 
-        {/* The narrative with inline blanks */}
-        <div className="border border-zinc-800 bg-zinc-900/40 p-6 text-base leading-loose text-zinc-300">
+        {/* The narrative with inline blanks — no surrounding box, roomy line spacing. */}
+        <div className="text-base leading-[2.6] text-zinc-300">
           {parts.map((part, i) => {
             const m = part.match(/\{\{(\w+)\}\}/)
             if (!m) return <Fragment key={i}>{part}</Fragment>
@@ -52,30 +53,16 @@ export default function ReportCardTab({ caseData, unlocked, game }) {
               : cfg.options.filter((o) => o !== cfg.targetValue)
 
             return (
-              <select
+              <Dropdown
                 key={i}
                 value={answers[key] || ''}
-                onChange={(e) => {
-                  setAnswers((a) => ({ ...a, [key]: e.target.value }))
+                options={options}
+                tone={isRight ? 'right' : isWrong ? 'wrong' : 'idle'}
+                onChange={(v) => {
+                  setAnswers((a) => ({ ...a, [key]: v }))
                   setGraded(null)
                 }}
-                className={`mx-1 inline-block min-w-[8rem] rounded-lg border bg-zinc-950 px-3 py-1 align-middle text-sm focus:outline-none ${
-                  isRight
-                    ? 'border-zinc-400 text-zinc-100'
-                    : isWrong
-                      ? 'border-crimson text-crimson'
-                      : 'border-zinc-600 text-zinc-100 hover:border-zinc-400'
-                }`}
-              >
-                <option value="" disabled>
-                  &nbsp;
-                </option>
-                {options.map((opt) => (
-                  <option key={opt} value={opt}>
-                    {opt}
-                  </option>
-                ))}
-              </select>
+              />
             )
           })}
         </div>
@@ -83,7 +70,7 @@ export default function ReportCardTab({ caseData, unlocked, game }) {
         {/* Result banner */}
         {graded && (
           <div
-            className={`mt-6 border p-4 text-sm ${
+            className={`mt-6 rounded-xl border p-4 text-sm ${
               graded.correct
                 ? 'border-zinc-500 bg-zinc-800/40 text-zinc-300'
                 : 'border-crimson bg-crimson-dim/10 text-crimson'
