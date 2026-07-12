@@ -1,16 +1,27 @@
-import initSqlJs from 'sql.js'
-// Vite resolves this to a hashed asset URL at build time; works on any static host.
-import wasmUrl from 'sql.js/dist/sql-wasm.wasm?url'
-
 let sqlPromise = null
 
 /**
  * Lazily initialise the sql.js Wasm runtime exactly once.
+ *
+ * Both the sql.js JS glue AND the ~660 KB .wasm binary are pulled in via
+ * dynamic import(), so nothing sql.js-related lives in the initial bundle or
+ * the module-evaluation path. The engine is only fetched the first time a case
+ * database is actually built.
+ *
  * @returns {Promise<import('sql.js').SqlJsStatic>}
  */
 export function getSqlJs() {
   if (!sqlPromise) {
-    sqlPromise = initSqlJs({ locateFile: () => wasmUrl })
+    sqlPromise = (async () => {
+      const [{ default: initSqlJs }, { default: wasmUrl }] = await Promise.all([
+        import('sql.js'),
+        // Vite resolves this to a hashed asset URL at build time; the ?url import
+        // is now evaluated lazily rather than at module top, so it never blocks
+        // (or crashes) the initial render.
+        import('sql.js/dist/sql-wasm.wasm?url'),
+      ])
+      return initSqlJs({ locateFile: () => wasmUrl })
+    })()
   }
   return sqlPromise
 }
