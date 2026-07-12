@@ -83,30 +83,33 @@ export default function GameDashboard({ game }) {
         </span>
       </header>
 
-      <TabBar tabs={TABS} active={tab} onSelect={setTab} />
+      {/* Folder-card: tabs stick out of the top of a white-outlined content box. */}
+      <div className="flex min-h-0 flex-1 flex-col px-3 pb-3">
+        <TabBar tabs={TABS} active={tab} onSelect={setTab} />
 
-      <main className="flex-1 overflow-hidden">
-        {tab === 'scene' && <CrimeSceneTab caseData={caseData} />}
-        {tab === 'board' && <CaseBoardTab caseData={caseData} />}
-        {tab === 'analysis' && (
-          <AnalysisTab
-            caseData={caseData}
-            db={db}
-            dbError={dbError}
-            game={game}
-            unlocked={unlocked}
-            onUnlocksChange={persistUnlocks}
-          />
-        )}
-        {tab === 'report' && (
-          <ReportCardTab
-            caseData={caseData}
-            unlocked={unlocked}
-            game={game}
-            goToAnalysis={() => setTab('analysis')}
-          />
-        )}
-      </main>
+        <main className="min-h-0 flex-1 overflow-hidden rounded-2xl rounded-tl-none border border-zinc-100 bg-zinc-950">
+          {tab === 'scene' && <CrimeSceneTab caseData={caseData} />}
+          {tab === 'board' && <CaseBoardTab caseData={caseData} />}
+          {tab === 'analysis' && (
+            <AnalysisTab
+              caseData={caseData}
+              db={db}
+              dbError={dbError}
+              game={game}
+              unlocked={unlocked}
+              onUnlocksChange={persistUnlocks}
+            />
+          )}
+          {tab === 'report' && (
+            <ReportCardTab
+              caseData={caseData}
+              unlocked={unlocked}
+              game={game}
+              goToAnalysis={() => setTab('analysis')}
+            />
+          )}
+        </main>
+      </div>
     </div>
   )
 }
