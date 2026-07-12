@@ -94,6 +94,7 @@ function Board({ tables }) {
               <path
                 key={i}
                 d={d}
+                className="animate-dash-flow"
                 fill="none"
                 stroke="#a1a1aa"
                 strokeWidth="1.5"

@@ -4,7 +4,7 @@ import { LockedCase } from './CrimeSceneTab.jsx'
 import Dropdown from './Dropdown.jsx'
 import CaseStamp from './CaseStamp.jsx'
 
-export default function ReportCardTab({ caseData, unlocked, game, play }) {
+export default function ReportCardTab({ caseData, unlocked, game, play, shake }) {
   const report = caseData.report
   const [answers, setAnswers] = useState({})
   const [graded, setGraded] = useState(null)
@@ -24,6 +24,7 @@ export default function ReportCardTab({ caseData, unlocked, game, play }) {
       play('solved')
     } else {
       play('error')
+      shake()
     }
   }
 

@@ -8,7 +8,7 @@ import { LockedCase } from './CrimeSceneTab.jsx'
 
 const STARTER = '-- Query the evidence. Try:\nSELECT * FROM suspects;'
 
-export default function AnalysisTab({ caseData, db, dbError, game, play, unlocked, onUnlocksChange }) {
+export default function AnalysisTab({ caseData, db, dbError, game, play, shake, unlocked, onUnlocksChange }) {
   const [sqlText, setSqlText] = useState(STARTER)
   const [result, setResult] = useState(null)
   const [flash, setFlash] = useState(null) // toast for newly unlocked clues
@@ -29,6 +29,7 @@ export default function AnalysisTab({ caseData, db, dbError, game, play, unlocke
 
     if (res.error) {
       play('error')
+      shake()
       return
     }
 
@@ -56,7 +57,7 @@ export default function AnalysisTab({ caseData, db, dbError, game, play, unlocke
     } else {
       play('success')
     }
-  }, [db, sqlText, caseData.report, unlocked, onUnlocksChange, play])
+  }, [db, sqlText, caseData.report, unlocked, onUnlocksChange, play, shake])
 
   // Ctrl/Cmd+Enter to run.
   const onKeyDown = (e) => {

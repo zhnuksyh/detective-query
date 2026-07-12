@@ -55,6 +55,21 @@ export default {
           '60%': { opacity: '1', transform: 'scale(1.4)' },
           '100%': { opacity: '1', transform: 'scale(1.5)' },
         },
+        // Marching-ants: scroll the dash pattern along the ERD connectors so
+        // they visibly flow toward the referenced column. One full cycle equals
+        // the dash+gap length (2 + 4 = 6) so the loop is seamless.
+        'dash-flow': {
+          to: { strokeDashoffset: '-6' },
+        },
+        // Quick horizontal shake for wrong-answer feedback.
+        shake: {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '15%': { transform: 'translateX(-8px)' },
+          '30%': { transform: 'translateX(7px)' },
+          '45%': { transform: 'translateX(-6px)' },
+          '60%': { transform: 'translateX(4px)' },
+          '75%': { transform: 'translateX(-2px)' },
+        },
       },
       animation: {
         'fade-up': 'fade-up 0.35s cubic-bezier(0.22, 1, 0.36, 1) both',
@@ -62,6 +77,8 @@ export default {
         'toast-up': 'toast-up 0.32s cubic-bezier(0.22, 1, 0.36, 1) both',
         'pop-in': 'pop-in 0.22s cubic-bezier(0.22, 1, 0.36, 1) both',
         'stamp-in': 'stamp-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both',
+        'dash-flow': 'dash-flow 0.9s linear infinite',
+        shake: 'shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both',
       },
     },
   },

@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useCallback, useRef, useState } from 'react'
 import { useGame } from './state/useGame.js'
 import { useSound } from './state/useSound.js'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
@@ -16,9 +16,23 @@ export default function App() {
   const game = useGame()
   const play = useSound(game)
 
+  // A one-shot screen shake for error feedback (wrong report, failed query).
+  // Toggling the class off then on again re-triggers the CSS animation.
+  const [shaking, setShaking] = useState(false)
+  const shakeTimer = useRef(null)
+  const shake = useCallback(() => {
+    clearTimeout(shakeTimer.current)
+    setShaking(false)
+    // Next frame so the class removal is committed before we re-add it.
+    requestAnimationFrame(() => {
+      setShaking(true)
+      shakeTimer.current = setTimeout(() => setShaking(false), 500)
+    })
+  }, [])
+
   return (
     <div
-      className="h-full w-full bg-zinc-950 text-zinc-200"
+      className={`h-full w-full bg-zinc-950 text-zinc-200 ${shaking ? 'animate-shake' : ''}`}
       style={{ fontSize: `${game.save.settings.textScale}rem` }}
     >
       <ErrorBoundary>
@@ -31,7 +45,7 @@ export default function App() {
           {game.screen === 'credits' && <Credits game={game} play={play} />}
           {game.screen === 'game' && (
             <Suspense fallback={<DashboardLoading />}>
-              <GameDashboard game={game} play={play} />
+              <GameDashboard game={game} play={play} shake={shake} />
             </Suspense>
           )}
         </div>

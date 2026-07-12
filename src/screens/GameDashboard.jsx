@@ -15,12 +15,12 @@ const TABS = [
   { key: 'report', label: 'REPORT CARD' },
 ]
 
-export default function GameDashboard({ game, play }) {
+export default function GameDashboard({ game, play, shake }) {
   const caseData = getCase(game.openCaseId)
   const [tab, setTab] = useState('scene')
 
   const selectTab = (key) => {
-    if (key !== tab) play('tab')
+    if (key !== tab) play('paper') // page-flip rustle on tab change
     setTab(key)
   }
   const [db, setDb] = useState(null)
@@ -113,6 +113,7 @@ export default function GameDashboard({ game, play }) {
                   dbError={dbError}
                   game={game}
                   play={play}
+                  shake={shake}
                   unlocked={unlocked}
                   onUnlocksChange={persistUnlocks}
                 />
@@ -123,6 +124,7 @@ export default function GameDashboard({ game, play }) {
                   unlocked={unlocked}
                   game={game}
                   play={play}
+                  shake={shake}
                   goToAnalysis={() => selectTab('analysis')}
                 />
               )}
