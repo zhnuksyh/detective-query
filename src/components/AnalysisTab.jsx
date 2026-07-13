@@ -137,7 +137,7 @@ export default function AnalysisTab({ caseData, db, dbError, game, play, shake, 
           <ResultsTable result={result} />
 
           {flash && (
-            <div className="pointer-events-none absolute bottom-3 left-1/2 animate-toast-up border border-crimson/60 bg-zinc-900 px-4 py-2 text-[11px] font-bold uppercase tracking-widest text-crimson shadow-lg shadow-crimson/10">
+            <div className="pointer-events-none absolute bottom-3 left-1/2 animate-toast-up rounded-xl border border-[#f26d78]/40 bg-zinc-900 px-4 py-2 text-[11px] font-bold uppercase tracking-widest text-[#f26d78] shadow-lg shadow-black/30">
               {flash}
             </div>
           )}
