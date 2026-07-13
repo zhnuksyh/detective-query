@@ -41,8 +41,8 @@ export default function ReportCardTab({ caseData, unlocked, game, play, shake })
         {/* Completion stamp overlays the top-right once the report is correct. */}
         {stamped && (
           <CaseStamp
-            className="absolute -top-2 right-0 z-20 origin-center scale-150 animate-stamp-in"
-            rotate={-16}
+            className="absolute top-4 right-10 z-20 origin-center scale-150 animate-stamp-in"
+            rotate={-8}
           />
         )}
 

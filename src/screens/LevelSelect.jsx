@@ -196,7 +196,7 @@ function Folder({ c, index = 0, unlocked, solved, onOpen, onHover }) {
       </div>
 
       {/* Completion stamp, bottom-right, when the case is solved. */}
-      {solved && <CaseStamp className="absolute bottom-4 right-4" />}
+      {solved && <CaseStamp className="absolute bottom-7 right-7" />}
     </button>
   )
 }
