@@ -10,7 +10,7 @@ const MENU = [
 ]
 
 const REPO_URL = 'https://github.com/zhnuksyh/detective-query'
-const VERSION = 'v0.1.0'
+const VERSION = 'v0.1.1'
 
 // A faint SQL snippet tiled behind the art for texture.
 const SQL_TEXTURE = `SELECT * FROM suspects WHERE alibi IS NULL;
