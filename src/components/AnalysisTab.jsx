@@ -9,7 +9,10 @@ import { LockedCase } from './CrimeSceneTab.jsx'
 const STARTER = '-- Query the evidence. Try:\nSELECT * FROM suspects;'
 
 export default function AnalysisTab({ caseData, db, dbError, game, play, shake, unlocked, onUnlocksChange }) {
-  const [sqlText, setSqlText] = useState(STARTER)
+  // The editor draft lives in the save so it survives tab switches, returning
+  // to the menu, and opening other cases.
+  const sqlText = game.save.sqlDrafts?.[caseData.id] ?? STARTER
+  const setSqlText = (text) => game.setSqlDraft(caseData.id, text)
   const [result, setResult] = useState(null)
   const [flash, setFlash] = useState(null) // toast for newly unlocked clues
 

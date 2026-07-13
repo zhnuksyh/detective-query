@@ -46,6 +46,26 @@ export function useGame() {
     [patch],
   )
 
+  const setSqlDraft = useCallback(
+    (caseId, text) => {
+      patch((s) => ({ ...s, sqlDrafts: { ...s.sqlDrafts, [caseId]: text } }))
+    },
+    [patch],
+  )
+
+  const setReportAnswer = useCallback(
+    (caseId, key, value) => {
+      patch((s) => ({
+        ...s,
+        reportAnswers: {
+          ...s.reportAnswers,
+          [caseId]: { ...(s.reportAnswers?.[caseId] || {}), [key]: value },
+        },
+      }))
+    },
+    [patch],
+  )
+
   const setUnlocks = useCallback(
     (caseId, unlockedArray) => {
       patch((s) => ({ ...s, unlocks: { ...s.unlocks, [caseId]: unlockedArray } }))
@@ -79,6 +99,8 @@ export function useGame() {
     save,
     markSolved,
     setNotebook,
+    setSqlDraft,
+    setReportAnswer,
     setUnlocks,
     setSettings,
     setTutorialDone,

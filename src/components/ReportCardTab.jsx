@@ -6,7 +6,9 @@ import CaseStamp from './CaseStamp.jsx'
 
 export default function ReportCardTab({ caseData, unlocked, game, play, shake }) {
   const report = caseData.report
-  const [answers, setAnswers] = useState({})
+  // Selections live in the save so they survive tab switches, returning to
+  // the menu, and opening other cases.
+  const answers = game.save.reportAnswers?.[caseData.id] || {}
   const [graded, setGraded] = useState(null)
 
   if (!report) return <LockedCase caseData={caseData} />
@@ -77,7 +79,7 @@ export default function ReportCardTab({ caseData, unlocked, game, play, shake })
                 play={play}
                 tone={isRight ? 'right' : isWrong ? 'wrong' : 'idle'}
                 onChange={(v) => {
-                  setAnswers((a) => ({ ...a, [key]: v }))
+                  game.setReportAnswer(caseData.id, key, v)
                   setGraded(null)
                 }}
               />

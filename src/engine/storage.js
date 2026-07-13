@@ -12,6 +12,10 @@ const DEFAULT_STATE = {
   notebooks: {},
   // Per-case set of unlocked report blanks, keyed by case id -> string[].
   unlocks: {},
+  // Per-case SQL editor draft, keyed by case id.
+  sqlDrafts: {},
+  // Per-case report-card dropdown selections, keyed by case id -> { blank: value }.
+  reportAnswers: {},
   // Last case the player opened, for CONTINUE.
   lastCaseId: null,
   // Whether the Case 01 guided tutorial has been finished/dismissed.
