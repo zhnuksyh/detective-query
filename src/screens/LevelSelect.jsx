@@ -171,7 +171,7 @@ function Folder({ c, index = 0, unlocked, solved, onOpen, onHover }) {
       onClick={onOpen}
       onMouseEnter={onHover}
       style={{ '--stagger-i': index }}
-      className={`${CARD_WIDTH} stagger-item group relative flex min-h-0 shrink-0 animate-fade-up snap-start flex-col justify-between overflow-hidden rounded-2xl border border-zinc-100 bg-zinc-950 px-5 py-5 text-left text-zinc-200 transition-transform duration-200 hover:-translate-y-1.5 focus:-translate-y-1.5`}
+      className={`${CARD_WIDTH} stagger-item group relative flex min-h-0 shrink-0 animate-fade-up [animation-fill-mode:backwards] snap-start flex-col justify-between overflow-hidden rounded-2xl border border-zinc-100 bg-zinc-950 px-5 py-5 text-left text-zinc-200 transition-transform duration-300 ease-out hover:-translate-y-2 focus:-translate-y-2`}
     >
       {/* Vertical file code down the top-right corner. Letters are heavy; the
           "_" and "/" separators are thin for contrast. */}
