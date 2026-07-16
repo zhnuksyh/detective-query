@@ -65,31 +65,36 @@ export async function createDatabase(schemaSql) {
  * { columns, rows } plus any error message. Never throws — errors are returned
  * so the UI can render them in the results panel.
  *
+ * `allRows` covers every result set of a multi-statement run, so unlock checks
+ * still see a proving query even when it isn't the final statement.
+ *
  * @param {import('sql.js').Database} db
  * @param {string} sql
- * @returns {{ columns: string[], rows: Array<Record<string, unknown>>, error: string|null, empty: boolean }}
+ * @returns {{ columns: string[], rows: Array<Record<string, unknown>>, allRows: Array<Record<string, unknown>>, error: string|null, empty: boolean }}
  */
 export function runQuery(db, sql) {
   const trimmed = (sql || '').trim()
   if (!trimmed) {
-    return { columns: [], rows: [], error: null, empty: true }
+    return { columns: [], rows: [], allRows: [], error: null, empty: true }
   }
   try {
     const results = db.exec(trimmed)
     if (!results || results.length === 0) {
       // Statement ran but returned no result set (e.g. an UPDATE, or empty SELECT).
-      return { columns: [], rows: [], error: null, empty: true }
+      return { columns: [], rows: [], allRows: [], error: null, empty: true }
     }
-    const last = results[results.length - 1]
-    const rows = last.values.map((valueRow) => {
-      const obj = {}
-      last.columns.forEach((col, i) => {
-        obj[col] = valueRow[i]
+    const toRows = (set) =>
+      set.values.map((valueRow) => {
+        const obj = {}
+        set.columns.forEach((col, i) => {
+          obj[col] = valueRow[i]
+        })
+        return obj
       })
-      return obj
-    })
-    return { columns: last.columns, rows, error: null, empty: rows.length === 0 }
+    const rows = toRows(results[results.length - 1])
+    const allRows = results.length === 1 ? rows : results.flatMap(toRows)
+    return { columns: results[results.length - 1].columns, rows, allRows, error: null, empty: rows.length === 0 }
   } catch (err) {
-    return { columns: [], rows: [], error: err.message || String(err), empty: false }
+    return { columns: [], rows: [], allRows: [], error: err.message || String(err), empty: false }
   }
 }

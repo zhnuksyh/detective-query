@@ -59,7 +59,8 @@ export default function AnalysisTab({ caseData, db, dbError, game, play, shake, 
     if (caseData.report?.blanks) {
       const { unlocked: nextUnlocked, newlyUnlocked } = evaluateUnlocks(
         caseData.report.blanks,
-        res.rows,
+        // allRows spans every statement in the run, not just the displayed one.
+        res.allRows ?? res.rows,
         unlocked,
       )
       if (newlyUnlocked.length > 0) {
