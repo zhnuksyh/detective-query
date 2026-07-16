@@ -27,10 +27,14 @@ export default function ReportCardTab({ caseData, unlocked, game, play, shake })
     if (res.correct) {
       game.markSolved(caseData.id)
       setJustSolved(true)
-      // The slam lands ~50% into the 0.5s animation; time the thud to the
-      // impact frame, then let the fanfare follow once the ink has settled.
-      setTimeout(() => play('stamp'), 240)
-      setTimeout(() => play('solved'), 620)
+      // The slam lands ~50% into the 0.65s animation; the thud and a screen
+      // shake hit on the impact frame, then the fanfare follows once the ink
+      // has settled.
+      setTimeout(() => {
+        play('stamp')
+        shake()
+      }, 310)
+      setTimeout(() => play('solved'), 780)
     } else {
       play('error')
       shake()
@@ -99,18 +103,11 @@ export default function ReportCardTab({ caseData, unlocked, game, play, shake })
           })}
         </div>
 
-        {/* Result banner */}
-        {graded && (
-          <div
-            className={`mt-6 animate-pop-in rounded-xl border p-4 text-sm ${
-              graded.correct
-                ? 'border-zinc-500 bg-zinc-800/40 text-zinc-300'
-                : 'border-crimson bg-crimson-dim/10 text-crimson'
-            }`}
-          >
-            {graded.correct
-              ? 'CASE CLOSED. Your deduction holds up. The next file is unlocked.'
-              : 'The evidence contradicts this deduction. Re-check your answers.'}
+        {/* Result banner — only for a wrong deduction; a correct one gets the
+            full-board stamp instead. */}
+        {graded && !graded.correct && (
+          <div className="mt-6 animate-pop-in rounded-xl border border-crimson bg-crimson-dim/10 p-4 text-sm text-crimson">
+            The evidence contradicts this deduction. Re-check your answers.
           </div>
         )}
 
