@@ -3,7 +3,9 @@
  *
  * After every query the player runs, we inspect the returned rows and decide
  * which Report Card blanks should unlock. A blank unlocks when ANY returned row
- * has `row[unlockedByColumn] === triggerValue` (compared loosely so 3 === "3").
+ * has `row[unlockedByColumn] === triggerValue` (compared loosely so 3 === "3";
+ * column names match ignoring case, since SQL is case-insensitive and players
+ * write aliases like `AS LAST_PING`).
  *
  * A case defines its blanks like:
  *   blanks: {
@@ -25,7 +27,7 @@ export function evaluateUnlocks(blanks, rows, alreadyUnlocked) {
 
   for (const [key, config] of Object.entries(blanks)) {
     if (unlocked.has(key)) continue
-    const hit = rows.some((row) => looseEqual(row[config.unlockedByColumn], config.triggerValue))
+    const hit = rows.some((row) => looseEqual(readColumn(row, config.unlockedByColumn), config.triggerValue))
     if (hit) {
       unlocked.add(key)
       newlyUnlocked.push(key)
@@ -33,6 +35,21 @@ export function evaluateUnlocks(blanks, rows, alreadyUnlocked) {
   }
 
   return { unlocked, newlyUnlocked }
+}
+
+/**
+ * Resolve a configured column against the row's keys ignoring case. SQLite
+ * reports result columns with whatever casing the player typed, so an unlock
+ * keyed on `last_ping` must also accept `AS Last_Ping` / `AS LAST_PING`.
+ * Only own keys count — never fall through to Object.prototype.
+ */
+function readColumn(row, column) {
+  if (Object.prototype.hasOwnProperty.call(row, column)) return row[column]
+  const lower = column.toLowerCase()
+  for (const key of Object.keys(row)) {
+    if (key.toLowerCase() === lower) return row[key]
+  }
+  return undefined
 }
 
 /** Loose equality so INTEGER 3 matches the string "3", trimming text. */

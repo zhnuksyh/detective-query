@@ -117,6 +117,12 @@ the query that proves it** — the anti-cheat.
   - **unlockedByColumn** + **triggerValue** — the blank unlocks when a query
     returns a row where `row[unlockedByColumn] === triggerValue`. Pick a column +
     value that only appears when the player runs the *right* proving query.
+    Matching is forgiving about spelling, not about substance: column names
+    compare case-insensitively (`AS LAST_PING` unlocks a `last_ping` trigger),
+    values compare loosely (`3` == `"3"`, text trimmed + case-insensitive), and
+    every statement in a multi-statement run is checked, not just the last one.
+    An aliased aggregate still requires the alias — `SELECT MAX(x)` without
+    `AS …` does not unlock, which is what forces real query work.
   - **hint** — one line nudging toward the proving query (shown as guidance).
 
 Fill in per blank:
