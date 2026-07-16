@@ -86,7 +86,11 @@ export function useGame() {
   )
 
   const hardReset = useCallback(() => {
-    setSave(resetState())
+    // Wiping progress must not revert the player's preferences: "NEW GAME" and
+    // "Reset all progress" both funnel through here, and audio/display settings
+    // aren't progress. The save effect re-persists the merged state right after
+    // resetState() clears storage.
+    setSave((prev) => ({ ...resetState(), settings: prev.settings }))
     setOpenCaseId(null)
     setScreen('menu')
   }, [])
