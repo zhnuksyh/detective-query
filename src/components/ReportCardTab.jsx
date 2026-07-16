@@ -10,6 +10,9 @@ export default function ReportCardTab({ caseData, unlocked, game, play, shake })
   // the menu, and opening other cases.
   const answers = game.save.reportAnswers?.[caseData.id] || {}
   const [graded, setGraded] = useState(null)
+  // True only for the solve that just happened in this session — it drives the
+  // slam animation + sound; a previously solved case shows the stamp at rest.
+  const [justSolved, setJustSolved] = useState(false)
 
   if (!report) return <LockedCase caseData={caseData} />
 
@@ -23,7 +26,11 @@ export default function ReportCardTab({ caseData, unlocked, game, play, shake })
     setGraded(res)
     if (res.correct) {
       game.markSolved(caseData.id)
-      play('solved')
+      setJustSolved(true)
+      // The slam lands ~50% into the 0.5s animation; time the thud to the
+      // impact frame, then let the fanfare follow once the ink has settled.
+      setTimeout(() => play('stamp'), 240)
+      setTimeout(() => play('solved'), 620)
     } else {
       play('error')
       shake()
@@ -36,16 +43,21 @@ export default function ReportCardTab({ caseData, unlocked, game, play, shake })
   const stamped = alreadySolved || graded?.correct
 
   return (
-    <div className="h-full overflow-y-auto px-8 py-7">
-      <div className="relative mx-auto max-w-3xl">
-        {/* Completion stamp overlays the top-right once the report is correct. */}
-        {stamped && (
-          <CaseStamp
-            className="absolute top-4 right-10 z-20 origin-center scale-150 animate-stamp-in"
-            rotate={-8}
-          />
-        )}
+    <div className="relative h-full overflow-y-auto px-8 py-7">
+      {/* Once the case is closed, the stamp fills the board diagonally. The
+          slam animation lives on this wrapper (scale) while the stamp itself
+          owns the rotation, so the transforms compose. */}
+      {stamped && (
+        <div
+          className={`pointer-events-none absolute inset-0 z-20 flex items-center justify-center ${
+            justSolved ? 'animate-stamp-slam' : ''
+          }`}
+        >
+          <CaseStamp size="board" rotate={-16} />
+        </div>
+      )}
 
+      <div className="relative mx-auto max-w-3xl">
         <div className="mb-6">
           <h2 className="text-2xl font-semibold text-zinc-100">Report Card</h2>
           <p className="mt-1 text-xs text-zinc-500">
@@ -102,16 +114,18 @@ export default function ReportCardTab({ caseData, unlocked, game, play, shake })
           </div>
         )}
 
-        {/* Submit */}
-        <div className="mt-6 flex justify-end">
-          <button
-            onClick={submit}
-            disabled={!allAnswered}
-            className="press rounded-lg bg-crimson px-8 py-3 text-sm font-semibold uppercase tracking-widest text-zinc-950 transition-colors hover:bg-crimson/80 disabled:cursor-not-allowed disabled:bg-zinc-800 disabled:text-zinc-600"
-          >
-            {alreadySolved ? 'resubmit report' : 'submit report'}
-          </button>
-        </div>
+        {/* Submit — gone for good once the case is closed. */}
+        {!stamped && (
+          <div className="mt-6 flex justify-end">
+            <button
+              onClick={submit}
+              disabled={!allAnswered}
+              className="press rounded-lg bg-crimson px-8 py-3 text-sm font-semibold uppercase tracking-widest text-zinc-950 transition-colors hover:bg-crimson/80 disabled:cursor-not-allowed disabled:bg-zinc-800 disabled:text-zinc-600"
+            >
+              submit report
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )

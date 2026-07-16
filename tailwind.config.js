@@ -55,6 +55,16 @@ export default {
           '60%': { opacity: '1', transform: 'scale(1.4)' },
           '100%': { opacity: '1', transform: 'scale(1.5)' },
         },
+        // Full-board stamp slam: drops in from high above the page, squashes on
+        // impact, then settles. Scale/opacity only — the rotation lives on the
+        // stamp element inside, so the two transforms compose.
+        'stamp-slam': {
+          '0%': { opacity: '0', transform: 'scale(3.4)' },
+          '50%': { opacity: '1', transform: 'scale(0.92)' },
+          '68%': { transform: 'scale(1.06)' },
+          '84%': { transform: 'scale(0.98)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
+        },
         // Marching-ants: scroll the dash pattern along the ERD connectors so
         // they visibly flow toward the referenced column. One full cycle equals
         // the dash+gap length (2 + 4 = 6) so the loop is seamless.
@@ -77,6 +87,7 @@ export default {
         'toast-up': 'toast-up 0.32s cubic-bezier(0.22, 1, 0.36, 1) both',
         'pop-in': 'pop-in 0.22s cubic-bezier(0.22, 1, 0.36, 1) both',
         'stamp-in': 'stamp-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both',
+        'stamp-slam': 'stamp-slam 0.5s cubic-bezier(0.5, 0, 0.15, 1) both',
         'dash-flow': 'dash-flow 0.9s linear infinite',
         shake: 'shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both',
       },

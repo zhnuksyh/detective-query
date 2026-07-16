@@ -241,6 +241,14 @@ const EFFECTS = {
     tone({ freq: 880, type: 'sine', start: 0.09, dur: 0.12, gain: 0.6 })
     tone({ freq: 1175, type: 'sine', start: 0.18, dur: 0.18, gain: 0.55 })
   },
+  stamp: () => {
+    // Heavy rubber-stamp slam: a sharp smack of noise, a deep pitch-dropping
+    // thud, and a low body resonance so it lands with real weight.
+    noiseBurst({ dur: 0.07, gain: 1.2, freq: 1100, sweepTo: 260, q: 0.5 })
+    tone({ freq: 150, type: 'sine', dur: 0.28, gain: 1.3, glideTo: 42 })
+    tone({ freq: 95, type: 'triangle', start: 0.015, dur: 0.32, gain: 0.7, glideTo: 48 })
+    noiseBurst({ start: 0.04, dur: 0.16, gain: 0.35, freq: 500, sweepTo: 150, q: 0.7 })
+  },
   solved: () => {
     // A four-note fanfare for CASE CLOSED.
     const notes = [523, 659, 784, 1047]
