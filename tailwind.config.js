@@ -68,6 +68,11 @@ export default {
           '90%': { transform: 'scale(1.03)' },
           '100%': { opacity: '1', transform: 'scale(1)', filter: 'blur(0)' },
         },
+        // Toast dismissal: sink back toward the bottom edge and fade.
+        'toast-down': {
+          '0%': { opacity: '1', transform: 'translate(-50%, 0)' },
+          '100%': { opacity: '0', transform: 'translate(-50%, 12px)' },
+        },
         // Marching-ants: scroll the dash pattern along the ERD connectors so
         // they visibly flow toward the referenced column. One full cycle equals
         // the dash+gap length (2 + 4 = 6) so the loop is seamless.
@@ -88,6 +93,7 @@ export default {
         'fade-up': 'fade-up 0.35s cubic-bezier(0.22, 1, 0.36, 1) both',
         'fade-in': 'fade-in 0.4s ease-out both',
         'toast-up': 'toast-up 0.32s cubic-bezier(0.22, 1, 0.36, 1) both',
+        'toast-down': 'toast-down 0.3s cubic-bezier(0.55, 0, 0.55, 0.2) both',
         'pop-in': 'pop-in 0.22s cubic-bezier(0.22, 1, 0.36, 1) both',
         'stamp-in': 'stamp-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both',
         'stamp-slam': 'stamp-slam 0.65s cubic-bezier(0.5, 0, 0.15, 1) both',        'dash-flow': 'dash-flow 0.9s linear infinite',

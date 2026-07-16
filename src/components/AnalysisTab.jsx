@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import CodeMirror from '@uiw/react-codemirror'
 import { sql, SQLite } from '@codemirror/lang-sql'
 import { runQuery } from '../engine/sqlEngine.js'
@@ -19,7 +19,19 @@ export default function AnalysisTab({ caseData, db, dbError, game, play, shake, 
   const sqlText = game.save.sqlDrafts?.[caseData.id] ?? STARTER
   const setSqlText = (text) => game.setSqlDraft(caseData.id, text)
   const [result, setResult] = useState(() => resultCache.get(caseData.id) ?? null)
-  const [flash, setFlash] = useState(null) // toast for newly unlocked clues
+  // Toast for newly unlocked clues: null | 'in' | 'out' (the phase drives the
+  // enter/exit animation). Timers are tracked so back-to-back unlocks restart
+  // the toast cleanly instead of an old timer dismissing the new one.
+  const [flash, setFlash] = useState(null)
+  const flashTimers = useRef([])
+  const showFlash = useCallback(() => {
+    flashTimers.current.forEach(clearTimeout)
+    setFlash('in')
+    flashTimers.current = [
+      setTimeout(() => setFlash('out'), 3000),
+      setTimeout(() => setFlash(null), 3300),
+    ]
+  }, [])
 
   const notebook = game.save.notebooks[caseData.id] || ''
 
@@ -53,9 +65,7 @@ export default function AnalysisTab({ caseData, db, dbError, game, play, shake, 
       if (newlyUnlocked.length > 0) {
         unlockedSomething = true
         onUnlocksChange(nextUnlocked)
-        const labels = newlyUnlocked.map((k) => caseData.report.blanks[k].label).join(', ')
-        setFlash(`CLUE VERIFIED → ${labels}`)
-        setTimeout(() => setFlash(null), 4000)
+        showFlash()
       }
     }
 
@@ -66,7 +76,7 @@ export default function AnalysisTab({ caseData, db, dbError, game, play, shake, 
     } else {
       play('success')
     }
-  }, [db, sqlText, caseData.id, caseData.report, unlocked, onUnlocksChange, play, shake])
+  }, [db, sqlText, caseData.id, caseData.report, unlocked, onUnlocksChange, play, shake, showFlash])
 
   // Ctrl/Cmd+Enter to run.
   const onKeyDown = (e) => {
@@ -137,8 +147,12 @@ export default function AnalysisTab({ caseData, db, dbError, game, play, shake, 
           <ResultsTable result={result} />
 
           {flash && (
-            <div className="pointer-events-none absolute bottom-3 left-1/2 animate-toast-up rounded-xl border border-[#f26d78]/40 bg-zinc-900 px-4 py-2 text-[11px] font-bold uppercase tracking-widest text-[#f26d78] shadow-lg shadow-black/30">
-              {flash}
+            <div
+              className={`pointer-events-none absolute bottom-3 left-1/2 rounded-xl border border-[#f26d78]/40 bg-zinc-900 px-4 py-2 text-[11px] font-bold uppercase tracking-widest text-[#f26d78] shadow-lg shadow-black/30 ${
+                flash === 'in' ? 'animate-toast-up' : 'animate-toast-down'
+              }`}
+            >
+              CLUE VERIFIED!
             </div>
           )}
         </div>
