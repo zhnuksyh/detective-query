@@ -15,3 +15,6 @@ dev-server.log
 /*.jpg
 
 CLAUDE.md
+
+# internal build notes, not shipped
+TRAILER.md
